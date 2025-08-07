@@ -1,0 +1,1309 @@
+{
+  "sbomVersion": "1.0",
+  "metadata": {
+    "timestamp": "2025-08-07T11:51:49.019298",
+    "tool": "CAST Highlight SBOM Generator",
+    "version": "2.0",
+    "application": {
+      "name": "Unknown",
+      "version": "Unknown",
+      "description": "Generated from CAST Highlight data"
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "commons-fileupload:commons-fileupload",
+      "version": "1.2.1",
+      "description": "",
+      "purl": "pkg:generic/commons-fileupload:commons-fileupload@1.2.1",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "ScanAndDependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "1.6.0"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:dependencies",
+          "value": "True"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1202713672000}"
+        }
+      ],
+      "licenses": [
+        {
+          "licenseId": "Apache License 2.0",
+          "name": "Apache License 2.0",
+          "url": "",
+          "compliance": "compliant",
+          "type": "",
+          "text": ""
+        }
+      ],
+      "vulnerabilities": [
+        {
+          "id": "CVE-2013-0248",
+          "description": "The default configuration of javax.servlet.context.tempdir in Apache Commons FileUpload 1.0 through 1.2.2 uses the /tmp directory for uploaded files, which allows local users to overwrite arbitrary files via an unspecified symlink attack.",
+          "severity": "LOW",
+          "cvssScore": 3.3,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:commons_fileupload",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2013-0248",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2013-2186",
+          "description": "The DiskFileItem class in Apache Commons FileUpload, as used in Red Hat JBoss BRMS 5.3.1; JBoss Portal 4.3 CP07, 5.2.2, and 6.0.0; and Red Hat JBoss Web Server 1.0.2 allows remote attackers to write to arbitrary files via a NULL byte in a file name in a serialized instance.",
+          "severity": "HIGH",
+          "cvssScore": 7.5,
+          "cweId": "CWE-20",
+          "cpe": null,
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2013-2186",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2014-0050",
+          "description": "MultipartStream.java in Apache Commons FileUpload before 1.3.1, as used in Apache Tomcat, JBoss Web, and other products, allows remote attackers to cause a denial of service (infinite loop and CPU consumption) via a crafted Content-Type header that bypasses a loop's intended exit conditions.",
+          "severity": "HIGH",
+          "cvssScore": 7.5,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:tomcat",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2014-0050",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2016-1000031",
+          "description": "Apache Commons FileUpload before 1.3.3 DiskFileItem File Manipulation Remote Code Execution",
+          "severity": "CRITICAL",
+          "cvssScore": 9.8,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:commons_fileupload",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2016-1000031",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2016-3092",
+          "description": "The MultipartStream class in Apache Commons Fileupload before 1.3.2, as used in Apache Tomcat 7.x before 7.0.70, 8.x before 8.0.36, 8.5.x before 8.5.3, and 9.x before 9.0.0.M7 and other products, allows remote attackers to cause a denial of service (CPU consumption) via a long boundary string.",
+          "severity": "HIGH",
+          "cvssScore": 7.5,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:tomcat",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2016-3092",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2023-24998",
+          "description": "Apache Commons FileUpload before 1.5 does not limit the number of request parts to be processed resulting in the possibility of an attacker triggering a DoS with a malicious upload or series of uploads.\n\n\n\n\nNote that, like all of the file upload limits, the\n          new configuration option (FileUploadBase#setFileCountMax) is not\n          enabled by default and must be explicitly configured.",
+          "severity": "HIGH",
+          "cvssScore": 7.5,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:commons_fileupload",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2023-24998",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2025-48976",
+          "description": "Allocation of resources for multipart headers with insufficient limits enabled a DoS vulnerability in Apache Commons FileUpload.\n\nThis issue affects Apache Commons FileUpload: from 1.0 before 1.6; from 2.0.0-M1 before 2.0.0-M4.\n\nUsers are recommended to upgrade to versions 1.6 or 2.0.0-M4, which fix the issue.",
+          "severity": "HIGH",
+          "cvssScore": 7.5,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:commons_fileupload",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2025-48976",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        }
+      ],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020422"
+    },
+    {
+      "type": "library",
+      "name": "javax.activation:activation",
+      "version": "1.1",
+      "description": "",
+      "purl": "pkg:generic/javax.activation:activation@1.1",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "Dependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "1.1.1"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1146613709000}"
+        }
+      ],
+      "licenses": [
+        {
+          "licenseId": "Common Development and Distribution License 1.0",
+          "name": "Common Development and Distribution License 1.0",
+          "url": "",
+          "compliance": "partial",
+          "type": "",
+          "text": ""
+        }
+      ],
+      "vulnerabilities": [],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020448"
+    },
+    {
+      "type": "library",
+      "name": "commons-discovery:commons-discovery",
+      "version": "0.2",
+      "description": "",
+      "purl": "pkg:generic/commons-discovery:commons-discovery@0.2",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "ScanAndDependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "0.5"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:dependencies",
+          "value": "True"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1173718896000}"
+        }
+      ],
+      "licenses": [],
+      "vulnerabilities": [],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020460"
+    },
+    {
+      "type": "library",
+      "name": "javax.servlet:servlet-api",
+      "version": "2.3",
+      "description": "",
+      "purl": "pkg:generic/javax.servlet:servlet-api@2.3",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "Dependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "3.0-alpha-1"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1131487113000}"
+        }
+      ],
+      "licenses": [],
+      "vulnerabilities": [],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020469"
+    },
+    {
+      "type": "library",
+      "name": "commons-io:commons-io",
+      "version": "1.4",
+      "description": "",
+      "purl": "pkg:generic/commons-io:commons-io@1.4",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "ScanAndDependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "2.19.0"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:dependencies",
+          "value": "True"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1200861847000}"
+        }
+      ],
+      "licenses": [
+        {
+          "licenseId": "Apache License 2.0",
+          "name": "Apache License 2.0",
+          "url": "",
+          "compliance": "compliant",
+          "type": "",
+          "text": ""
+        }
+      ],
+      "vulnerabilities": [
+        {
+          "id": "CVE-2021-29425",
+          "description": "In Apache Commons IO before 2.7, When invoking the method FileNameUtils.normalize with an improper input string, like \"//../foo\", or \"\\\\..\\foo\", the result would be the same value, thus possibly providing access to files in the parent directory, but not further above (thus \"limited\" path traversal), if the calling code would use the result to construct a path value.",
+          "severity": "MEDIUM",
+          "cvssScore": 4.8,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:commons_io",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2021-29425",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        }
+      ],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020476"
+    },
+    {
+      "type": "library",
+      "name": "commons-logging:commons-logging",
+      "version": "1.0.4",
+      "description": "",
+      "purl": "pkg:generic/commons-logging:commons-logging@1.0.4",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "ScanAndDependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "1.3.5"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:dependencies",
+          "value": "True"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1131488201000}"
+        }
+      ],
+      "licenses": [
+        {
+          "licenseId": "Apache License 2.0",
+          "name": "Apache License 2.0",
+          "url": "",
+          "compliance": "compliant",
+          "type": "",
+          "text": ""
+        }
+      ],
+      "vulnerabilities": [],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020483"
+    },
+    {
+      "type": "library",
+      "name": "commons-collections:commons-collections",
+      "version": "3.1",
+      "description": "",
+      "purl": "pkg:generic/commons-collections:commons-collections@3.1",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "ScanAndDependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "3.2.2"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:dependencies",
+          "value": "True"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1131489091000}"
+        }
+      ],
+      "licenses": [],
+      "vulnerabilities": [
+        {
+          "id": "CVE-2015-6420",
+          "description": "Serialized-object interfaces in certain Cisco Collaboration and Social Media; Endpoint Clients and Client Software; Network Application, Service, and Acceleration; Network and Content Security Devices; Network Management and Provisioning; Routing and Switching - Enterprise and Service Provider; Unified Computing; Voice and Unified Communications Devices; Video, Streaming, TelePresence, and Transcoding Devices; Wireless; and Cisco Hosted Services products allow remote attackers to execute arbitrary commands via a crafted serialized Java object, related to the Apache Commons Collections (ACC) library.",
+          "severity": "HIGH",
+          "cvssScore": 7.5,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:commons_collections",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2015-6420",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2015-7501",
+          "description": "Red Hat JBoss A-MQ 6.x; BPM Suite (BPMS) 6.x; BRMS 6.x and 5.x; Data Grid (JDG) 6.x; Data Virtualization (JDV) 6.x and 5.x; Enterprise Application Platform 6.x, 5.x, and 4.3.x; Fuse 6.x; Fuse Service Works (FSW) 6.x; Operations Network (JBoss ON) 3.x; Portal 6.x; SOA Platform (SOA-P) 5.x; Web Server (JWS) 3.x; Red Hat OpenShift/xPAAS 3.x; and Red Hat Subscription Asset Manager 1.3 allow remote attackers to execute arbitrary commands via a crafted serialized Java object, related to the Apache Commons Collections (ACC) library.",
+          "severity": "CRITICAL",
+          "cvssScore": 9.8,
+          "cweId": "CWE-502",
+          "cpe": null,
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2015-7501",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        }
+      ],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020490"
+    },
+    {
+      "type": "library",
+      "name": "log4j:log4j",
+      "version": "1.2.8",
+      "description": "",
+      "purl": "pkg:generic/log4j:log4j@1.2.8",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "ScanAndDependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "1.2.17"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1131487715000}"
+        }
+      ],
+      "licenses": [],
+      "vulnerabilities": [
+        {
+          "id": "CVE-2019-17571",
+          "description": "Included in Log4j 1.2 is a SocketServer class that is vulnerable to deserialization of untrusted data which can be exploited to remotely execute arbitrary code when combined with a deserialization gadget when listening to untrusted network traffic for log data. This affects Log4j versions up to 1.2 up to 1.2.17.",
+          "severity": "CRITICAL",
+          "cvssScore": 9.8,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:log4j",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2019-17571",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2020-9488",
+          "description": "Improper validation of certificate with host mismatch in Apache Log4j SMTP appender. This could allow an SMTPS connection to be intercepted by a man-in-the-middle attack which could leak any log messages sent through that appender. Fixed in Apache Log4j 2.12.3 and 2.13.1",
+          "severity": "LOW",
+          "cvssScore": 3.7,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:log4j",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2020-9488",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2020-9493",
+          "description": "A deserialization flaw was found in Apache Chainsaw versions prior to 2.1.0 which could lead to malicious code execution.",
+          "severity": "CRITICAL",
+          "cvssScore": 9.8,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:log4j",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2020-9493",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2021-4104",
+          "description": "JMSAppender in Log4j 1.2 is vulnerable to deserialization of untrusted data when the attacker has write access to the Log4j configuration. The attacker can provide TopicBindingName and TopicConnectionFactoryBindingName configurations causing JMSAppender to perform JNDI requests that result in remote code execution in a similar fashion to CVE-2021-44228. Note this issue only affects Log4j 1.2 when specifically configured to use JMSAppender, which is not the default. Apache Log4j 1.2 reached end of life in August 2015. Users should upgrade to Log4j 2 as it addresses numerous other issues from the previous versions.",
+          "severity": "HIGH",
+          "cvssScore": 7.5,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:log4j",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2021-4104",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2022-23302",
+          "description": "JMSSink in all versions of Log4j 1.x is vulnerable to deserialization of untrusted data when the attacker has write access to the Log4j configuration or if the configuration references an LDAP service the attacker has access to. The attacker can provide a TopicConnectionFactoryBindingName configuration causing JMSSink to perform JNDI requests that result in remote code execution in a similar fashion to CVE-2021-4104. Note this issue only affects Log4j 1.x when specifically configured to use JMSSink, which is not the default. Apache Log4j 1.2 reached end of life in August 2015. Users should upgrade to Log4j 2 as it addresses numerous other issues from the previous versions.",
+          "severity": "HIGH",
+          "cvssScore": 8.8,
+          "cweId": null,
+          "cpe": "cpe:/a:qos:reload4j",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2022-23302",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2022-23305",
+          "description": "By design, the JDBCAppender in Log4j 1.2.x accepts an SQL statement as a configuration parameter where the values to be inserted are converters from PatternLayout. The message converter, %m, is likely to always be included. This allows attackers to manipulate the SQL by entering crafted strings into input fields or headers of an application that are logged allowing unintended SQL queries to be executed. Note this issue only affects Log4j 1.x when specifically configured to use the JDBCAppender, which is not the default. Beginning in version 2.0-beta8, the JDBCAppender was re-introduced with proper support for parameterized SQL queries and further customization over the columns written to in logs. Apache Log4j 1.2 reached end of life in August 2015. Users should upgrade to Log4j 2 as it addresses numerous other issues from the previous versions.",
+          "severity": "CRITICAL",
+          "cvssScore": 9.8,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:log4j",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2022-23305",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2022-23307",
+          "description": "CVE-2020-9493 identified a deserialization issue that was present in Apache Chainsaw. Prior to Chainsaw V2.0 Chainsaw was a component of Apache Log4j 1.2.x where the same issue exists.",
+          "severity": "HIGH",
+          "cvssScore": 8.8,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:log4j",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2022-23307",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2023-26464",
+          "description": "** UNSUPPORTED WHEN ASSIGNED **\n\nWhen using the Chainsaw or SocketAppender components with Log4j 1.x on JRE less than 1.7, an attacker that manages to cause a logging entry involving a specially-crafted (ie, deeply nested) \nhashmap or hashtable (depending on which logging component is in use) to be processed could exhaust the available memory in the virtual machine and achieve Denial of Service when the object is deserialized.\n\nThis issue affects Apache Log4j before 2. Affected users are recommended to update to Log4j 2.x.\n\nNOTE: This vulnerability only affects products that are no longer supported by the maintainer.",
+          "severity": "HIGH",
+          "cvssScore": 7.5,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:log4j",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2023-26464",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        }
+      ],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020496"
+    },
+    {
+      "type": "library",
+      "name": "java2html:j2h",
+      "version": "1.3.1",
+      "description": "",
+      "purl": "pkg:generic/java2html:j2h@1.3.1",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "ScanAndDependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "1.3.1"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1138671347000}"
+        }
+      ],
+      "licenses": [],
+      "vulnerabilities": [],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020501"
+    },
+    {
+      "type": "library",
+      "name": "axis:axis-jaxrpc",
+      "version": "1.2",
+      "description": "",
+      "purl": "pkg:generic/axis:axis-jaxrpc@1.2",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "ScanAndDependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "1.4"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1131487406000}"
+        }
+      ],
+      "licenses": [],
+      "vulnerabilities": [],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020508"
+    },
+    {
+      "type": "library",
+      "name": "axis:axis-saaj",
+      "version": "1.2",
+      "description": "",
+      "purl": "pkg:generic/axis:axis-saaj@1.2",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "ScanAndDependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "1.4"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1131487399000}"
+        }
+      ],
+      "licenses": [],
+      "vulnerabilities": [],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020514"
+    },
+    {
+      "type": "library",
+      "name": "axis:axis-ant",
+      "version": "1.2",
+      "description": "",
+      "purl": "pkg:generic/axis:axis-ant@1.2",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "ScanAndDependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "1.4"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1131505405000}"
+        }
+      ],
+      "licenses": [],
+      "vulnerabilities": [],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020520"
+    },
+    {
+      "type": "library",
+      "name": "commons-beanutils:commons-beanutils",
+      "version": "1.6",
+      "description": "",
+      "purl": "pkg:generic/commons-beanutils:commons-beanutils@1.6",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "Scan"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "1.10.1"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:dependencies",
+          "value": "True"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1131488421000}"
+        }
+      ],
+      "licenses": [],
+      "vulnerabilities": [
+        {
+          "id": "CVE-2014-0114",
+          "description": "Apache Commons BeanUtils, as distributed in lib/commons-beanutils-1.8.0.jar in Apache Struts 1.x through 1.3.10 and in other products requiring commons-beanutils through 1.9.2, does not suppress the class property, which allows remote attackers to \"manipulate\" the ClassLoader and execute arbitrary code via the class parameter, as demonstrated by the passing of this parameter to the getClass method of the ActionForm object in Struts 1.",
+          "severity": "HIGH",
+          "cvssScore": 7.5,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:commons_beanutils",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2014-0114",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2019-10086",
+          "description": "In Apache Commons Beanutils 1.9.2, a special BeanIntrospector class was added which allows suppressing the ability for an attacker to access the classloader via the class property available on all Java objects. We, however were not using this by default characteristic of the PropertyUtilsBean.",
+          "severity": "HIGH",
+          "cvssScore": 7.3,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:nifi",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2019-10086",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2025-48734",
+          "description": "Improper Access Control vulnerability in Apache Commons.\n\n\n\nA special BeanIntrospector class was added in version 1.9.2. This can be used to stop attackers from using the declared class property of Java enum objects to get access to the classloader. However this protection was not enabled by default. PropertyUtilsBean (and consequently BeanUtilsBean) now disallows declared class level property access by default.\n\n\n\n\n\nReleases 1.11.0 and 2.0.0-M2 address a potential security issue when accessing enum properties in an uncontrolled way. If an application using Commons BeanUtils passes property paths from an external source directly to the getProperty() method of PropertyUtilsBean, an attacker can access the enum\u2019s class loader via the \u201cdeclaredClass\u201d property available on all Java \u201cenum\u201d objects. Accessing the enum\u2019s \u201cdeclaredClass\u201d allows remote attackers to access the ClassLoader and execute arbitrary code. The same issue exists with PropertyUtilsBean.getNestedProperty().\nStarting in versions 1.11.0 and 2.0.0-M2 a special BeanIntrospector suppresses the \u201cdeclaredClass\u201d property. Note that this new BeanIntrospector is enabled by default, but you can disable it to regain the old behavior; see section 2.5 of the user's guide and the unit tests.\n\nThis issue affects Apache Commons BeanUtils 1.x before 1.11.0, and 2.x before 2.0.0-M2.Users of the artifact commons-beanutils:commons-beanutils\n\n 1.x are recommended to upgrade to version 1.11.0, which fixes the issue.\n\n\nUsers of the artifact org.apache.commons:commons-beanutils2\n\n 2.x are recommended to upgrade to version 2.0.0-M2, which fixes the issue.",
+          "severity": "HIGH",
+          "cvssScore": 8.8,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:commons_beanutils",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2025-48734",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        }
+      ],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020525"
+    },
+    {
+      "type": "library",
+      "name": "axis:axis",
+      "version": "1.2",
+      "description": "",
+      "purl": "pkg:generic/axis:axis@1.2",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "ScanAndDependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "1.4"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1131487403000}"
+        }
+      ],
+      "licenses": [],
+      "vulnerabilities": [
+        {
+          "id": "CVE-2012-5784",
+          "description": "Apache Axis 1.4 and earlier, as used in PayPal Payments Pro, PayPal Mass Pay, PayPal Transactional Information SOAP, the Java Message Service implementation in Apache ActiveMQ, and other products, does not verify that the server hostname matches a domain name in the subject's Common Name (CN) or subjectAltName field of the X.509 certificate, which allows man-in-the-middle attackers to spoof SSL servers via an arbitrary valid certificate.",
+          "severity": "MEDIUM",
+          "cvssScore": 5.8,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:activemq",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2012-5784",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2014-3596",
+          "description": "The getCN function in Apache Axis 1.4 and earlier does not properly verify that the server hostname matches a domain name in the subject's Common Name (CN) or subjectAltName field of the X.509 certificate, which allows man-in-the-middle attackers to spoof SSL servers via a certificate with a subject that specifies a common name in a field that is not the CN field. NOTE: this issue exists because of an incomplete fix for CVE-2012-5784.",
+          "severity": "MEDIUM",
+          "cvssScore": 5.8,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:axis",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2014-3596",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2018-8032",
+          "description": "Apache Axis 1.x up to and including 1.4 is vulnerable to a cross-site scripting (XSS) attack in the default servlet/services.",
+          "severity": "MEDIUM",
+          "cvssScore": 6.1,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:axis",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2018-8032",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2019-0227",
+          "description": "A Server Side Request Forgery (SSRF) vulnerability affected the Apache Axis 1.4 distribution that was last released in 2006. Security and bug commits commits continue in the projects Axis 1.x Subversion repository, legacy users are encouraged to build from source. The successor to Axis 1.x is Axis2, the latest version is 1.7.9 and is not vulnerable to this issue.",
+          "severity": "HIGH",
+          "cvssScore": 7.5,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:axis",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2019-0227",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2023-40743",
+          "description": "** UNSUPPORTED WHEN ASSIGNED ** When integrating Apache Axis 1.x in an application, it may not have been obvious that looking up a service through \"ServiceFactory.getService\" allows potentially dangerous lookup mechanisms such as LDAP. When passing untrusted input to this API method, this could expose the application to DoS, SSRF and even attacks leading to RCE.\n\nAs Axis 1 has been EOL we recommend you migrate to a different SOAP engine, such as Apache Axis 2/Java. As a workaround, you may review your code to verify no untrusted or unsanitized input is passed to \"ServiceFactory.getService\", or by applying the patch from  https://github.com/apache/axis-axis1-java/commit/7e66753427466590d6def0125e448d2791723210 . The Apache Axis project does not expect to create an Axis 1.x release fixing this problem, though contributors that would like to work towards this are welcome.",
+          "severity": "CRITICAL",
+          "cvssScore": 9.8,
+          "cweId": null,
+          "cpe": "cpe:/a:apache:axis",
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2023-40743",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        },
+        {
+          "id": "CVE-2023-51441",
+          "description": "** UNSUPPORTED WHEN ASSIGNED ** Improper Input Validation vulnerability in Apache Axis allowed users with access to the admin service to perform possible SSRF\nThis issue affects Apache Axis: through 1.3.\n\nAs Axis 1 has been EOL we recommend you migrate to a different SOAP engine, such as Apache Axis 2/Java. Alternatively you could use a build of Axis with the patch from  https://github.com/apache/axis-axis1-java/commit/685c309febc64aa393b2d64a05f90e7eb9f73e06  applied. The Apache Axis project does not expect to create an Axis 1.x release \nfixing this problem, though contributors that would like to work towards\n this are welcome.\n\n",
+          "severity": "HIGH",
+          "cvssScore": 7.2,
+          "cweId": "CWE-918",
+          "cpe": null,
+          "isKev": false,
+          "link": "https://nvd.nist.gov/vuln/detail/CVE-2023-51441",
+          "publishedDate": null,
+          "patchStatus": "Unknown"
+        }
+      ],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020531"
+    },
+    {
+      "type": "library",
+      "name": "wsdl4j:wsdl4j",
+      "version": "1.5.1",
+      "description": "",
+      "purl": "pkg:generic/wsdl4j:wsdl4j@1.5.1",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "Dependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "1.6.3"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1135095638000}"
+        }
+      ],
+      "licenses": [],
+      "vulnerabilities": [],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020537"
+    },
+    {
+      "type": "library",
+      "name": "javax.mail:mail",
+      "version": "1.4.2",
+      "description": "",
+      "purl": "pkg:generic/javax.mail:mail@1.4.2",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "ScanAndDependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "1.4.7"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:dependencies",
+          "value": "True"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1312299511000}"
+        }
+      ],
+      "licenses": [
+        {
+          "licenseId": "Common Development and Distribution License 1.1",
+          "name": "Common Development and Distribution License 1.1",
+          "url": "",
+          "compliance": "partial",
+          "type": "",
+          "text": ""
+        },
+        {
+          "licenseId": "GNU General Public License v2.0 w/Classpath exception",
+          "name": "GNU General Public License v2.0 w/Classpath exception",
+          "url": "",
+          "compliance": "partial",
+          "type": "",
+          "text": ""
+        }
+      ],
+      "vulnerabilities": [],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020543"
+    },
+    {
+      "type": "library",
+      "name": "javax.transaction:jta",
+      "version": "1.0.1B",
+      "description": "",
+      "purl": "pkg:generic/javax.transaction:jta@1.0.1B",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "Dependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "1.1"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1131487126000}"
+        }
+      ],
+      "licenses": [],
+      "vulnerabilities": [],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020548"
+    },
+    {
+      "type": "library",
+      "name": "net.sourceforge.jtds:jtds",
+      "version": "1.2.2",
+      "description": "",
+      "purl": "pkg:generic/net.sourceforge.jtds:jtds@1.2.2",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "ScanAndDependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "1.3.1"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1192459135000}"
+        }
+      ],
+      "licenses": [
+        {
+          "licenseId": "GNU Lesser General Public Licenses Family",
+          "name": "GNU Lesser General Public Licenses Family",
+          "url": "",
+          "compliance": "partial",
+          "type": "",
+          "text": ""
+        }
+      ],
+      "vulnerabilities": [],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020554"
+    },
+    {
+      "type": "library",
+      "name": "commons-digester:commons-digester",
+      "version": "1.4.1",
+      "description": "",
+      "purl": "pkg:generic/commons-digester:commons-digester@1.4.1",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "ScanAndDependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "2.1"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:dependencies",
+          "value": "True"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1132809458000}"
+        }
+      ],
+      "licenses": [],
+      "vulnerabilities": [],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020559"
+    },
+    {
+      "type": "library",
+      "name": "ecs:ecs",
+      "version": "1.4.2",
+      "description": "",
+      "purl": "pkg:generic/ecs:ecs@1.4.2",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "ScanAndDependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "1.4.2"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1131488450000}"
+        }
+      ],
+      "licenses": [],
+      "vulnerabilities": [],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020564"
+    },
+    {
+      "type": "library",
+      "name": "javax.mail:mailapi",
+      "version": "1.4.2",
+      "description": "",
+      "purl": "pkg:generic/javax.mail:mailapi@1.4.2",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "ScanAndDependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "1.4.3-rc1"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:dependencies",
+          "value": "True"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1274316527000}"
+        }
+      ],
+      "licenses": [
+        {
+          "licenseId": "GNU General Public License v2.0 w/Classpath exception",
+          "name": "GNU General Public License v2.0 w/Classpath exception",
+          "url": "",
+          "compliance": "partial",
+          "type": "",
+          "text": ""
+        },
+        {
+          "licenseId": "Common Development and Distribution License 1.1",
+          "name": "Common Development and Distribution License 1.1",
+          "url": "",
+          "compliance": "partial",
+          "type": "",
+          "text": ""
+        }
+      ],
+      "vulnerabilities": [],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020570"
+    },
+    {
+      "type": "library",
+      "name": "hsqldb:hsqldb",
+      "version": "1.8.0.7",
+      "description": "",
+      "purl": "pkg:generic/hsqldb:hsqldb@1.8.0.7",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "ScanAndDependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "1.8.0.10"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1159817694000}"
+        }
+      ],
+      "licenses": [
+        {
+          "licenseId": "NOASSERTION",
+          "name": "NOASSERTION",
+          "url": "",
+          "compliance": "undefined",
+          "type": "",
+          "text": ""
+        }
+      ],
+      "vulnerabilities": [],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020575"
+    },
+    {
+      "type": "library",
+      "name": "tomcat:catalina",
+      "version": "4.1.9",
+      "description": "",
+      "purl": "pkg:generic/tomcat:catalina@4.1.9",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "ScanAndDependency"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "5.5.23"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1131486719000}"
+        }
+      ],
+      "licenses": [],
+      "vulnerabilities": [],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020581"
+    },
+    {
+      "type": "library",
+      "name": "axis:axis-wsdl4j",
+      "version": "1.3",
+      "description": "",
+      "purl": "pkg:generic/axis:axis-wsdl4j@1.3",
+      "externalReferences": [],
+      "properties": [
+        {
+          "name": "cast:origin",
+          "value": "Scan"
+        },
+        {
+          "name": "cast:lastVersion",
+          "value": "1.2-beta-3"
+        },
+        {
+          "name": "cast:languages",
+          "value": "java"
+        },
+        {
+          "name": "cast:releaseDate",
+          "value": "{'time': 1131487408000}"
+        }
+      ],
+      "licenses": [],
+      "vulnerabilities": [],
+      "supplier": {
+        "name": "Unavailable from CAST Highlight",
+        "contact": "Unavailable from CAST Highlight"
+      },
+      "author": "Unavailable from CAST Highlight",
+      "copyright": "Unavailable from CAST Highlight",
+      "timestamp": "2025-08-07T11:51:49.020587"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+requests>=2.28.0
+typing-extensions>=4.0.0
+openpyxl>=3.0.0
+python-docx>=0.8.11
+cyclonedx-python-lib>=4.0.0 
