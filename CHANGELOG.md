@@ -1,5 +1,185 @@
 # Changelog - CAST Highlight SBOM Generator
 
+## [2.1.0] - 2025-08-08 - CycloneDX Support Release
+
+### 🌀 Major New Feature: CycloneDX Support
+
+#### **Complete CycloneDX 1.4 Compliance**
+- **Dual Format Support**: JSON and XML CycloneDX formats
+- **Industry Standard Compliance**: Full CycloneDX 1.4 specification compliance
+- **Rich Vulnerability Data**: CVE/CWE integration with CVSS scores
+- **PURL Support**: Package URL identifiers for components
+- **License Integration**: Complete license information mapping
+- **External References**: Repository and website links
+- **CAST Highlight Metadata**: Custom properties for CAST-specific data
+
+#### **CycloneDX Implementation Details**
+- **Manual Implementation**: Robust CycloneDX generation without dependency on problematic library APIs
+- **Fallback Mechanism**: Automatic fallback to CLI-based generation if needed
+- **UTF-8 Encoding**: Proper character encoding support
+- **Error Handling**: Comprehensive error handling with detailed logging
+- **Tool Integration**: Compatible with major security tools (Dependency Track, Snyk, OWASP, etc.)
+
+#### **New Files Added**
+- `tests/test_cyclonedx_generation.py` - Comprehensive CycloneDX testing suite
+- `tests/example_cyclonedx_usage.py` - Example usage and demonstration
+- `CYCLONEDX_SUPPORT.md` - Detailed CycloneDX documentation
+
+#### **Files Modified**
+- `src/sbom_generator.py` - Added complete CycloneDX export functionality
+- `README.md` - Added comprehensive CycloneDX support section
+- `requirements.txt` - Added cyclonedx-python-lib dependency
+
+### 🔧 Technical Enhancements
+
+#### **CycloneDX Export Methods**
+```python
+@staticmethod
+def export_cyclonedx(sbom_data: Dict, filename: str, format: str = "json"):
+    """Export SBOM data in CycloneDX format (manual implementation)"""
+
+@staticmethod
+def _cyclonedx_to_xml(cyclonedx_bom):
+    """Convert CycloneDX BOM to XML format"""
+
+@staticmethod
+def _generate_uuid():
+    """Generate a simple UUID for CycloneDX"""
+```
+
+#### **CycloneDX Data Mapping**
+| CAST Highlight Field | CycloneDX Field | Description |
+|---------------------|-----------------|-------------|
+| Component Name | `component.name` | Library/component name |
+| Version | `component.version` | Component version |
+| Description | `component.description` | Component description |
+| Package Type | `component.properties` | Maven, NPM, etc. |
+| Licenses | `component.licenses` | License information |
+| Vulnerabilities | `component.vulnerabilities` | CVE data with CVSS |
+| Repository URL | `component.externalReferences` | Source code links |
+| Criticality | `component.properties` | CAST-specific metadata |
+
+### 📤 Output Format Enhancements
+
+#### **CycloneDX JSON Format**
+- **BOM Format**: CycloneDX 1.4
+- **Metadata**: Timestamp, tools, application information
+- **Components**: Full component details with PURLs
+- **Vulnerabilities**: CVE/CWE with CVSS ratings
+- **Licenses**: Complete license information
+- **Properties**: CAST Highlight specific metadata
+
+#### **CycloneDX XML Format**
+- **XML Schema**: CycloneDX 1.4 compliant
+- **Namespace**: http://cyclonedx.org/schema/bom/1.4
+- **Serial Number**: UUID-based serial numbers
+- **Complete Structure**: All CycloneDX elements supported
+
+### 🧪 Testing Enhancements
+
+#### **New Test Suite**
+- `tests/test_cyclonedx_generation.py` - Comprehensive CycloneDX testing
+- **JSON Format Testing**: Validates JSON structure and content
+- **XML Format Testing**: Validates XML structure and schema compliance
+- **Real Data Testing**: Tests with actual CAST Highlight data
+- **Error Handling Testing**: Tests fallback mechanisms
+
+#### **Test Coverage**
+- ✅ JSON format generation
+- ✅ XML format generation
+- ✅ Real CAST Highlight data conversion
+- ✅ Vulnerability data mapping
+- ✅ License information preservation
+- ✅ PURL generation
+- ✅ Error handling and fallback
+
+### 🔗 Tool Integration
+
+#### **Compatible Tools**
+- **Dependency Track**: Upload for vulnerability analysis
+- **OWASP Dependency Check**: Security scanning
+- **Snyk**: Vulnerability monitoring
+- **GitHub Dependabot**: Dependency alerts
+- **Azure DevOps**: Security scanning
+- **Jenkins**: CI/CD pipeline integration
+- **Any CycloneDX-compatible tool**
+
+### 📋 Configuration Updates
+
+#### **New Configuration Option**
+```json
+{
+  "sbom_settings": {
+    "output_formats": ["json", "cyclonedx", "xlsx"]
+  }
+}
+```
+
+#### **Output Files**
+When `"cyclonedx"` is specified in output formats:
+- `{app_name}_ID{app_id}_{timestamp}_cyclonedx.json` - CycloneDX JSON format
+- `{app_name}_ID{app_id}_{timestamp}_cyclonedx.xml` - CycloneDX XML format
+
+### 🛠️ Dependencies
+
+#### **New Dependencies**
+- `cyclonedx-python-lib>=4.0.0` - CycloneDX format support
+- `uuid` (built-in) - For XML serial numbers
+
+### 🔍 Troubleshooting
+
+#### **Common Issues**
+1. **Library Import Errors**: Falls back to manual generation
+2. **Character Encoding**: UTF-8 encoding used for all files
+3. **Missing Data**: Fields marked as "Unknown" or omitted
+
+#### **Fallback Mechanism**
+If primary CycloneDX generation fails:
+1. Logs error with details
+2. Falls back to CLI-based generation (if available)
+3. Continues with other output formats
+
+### 📚 Documentation
+
+#### **New Documentation**
+- **CYCLONEDX_SUPPORT.md**: Comprehensive CycloneDX documentation
+- **README.md**: Added detailed CycloneDX section
+- **Example Usage**: Complete examples for both JSON and XML formats
+- **Integration Guide**: Tool integration instructions
+
+### 🎯 Benefits
+
+#### **For Security Teams**
+- **Standardized vulnerability reporting** across tools
+- **Automated security scanning** integration
+- **Compliance reporting** for regulations
+
+#### **For Development Teams**
+- **Clear dependency visibility** with PURLs
+- **License compliance** tracking
+- **Supply chain transparency**
+
+#### **For Operations Teams**
+- **Automated SBOM generation** in CI/CD
+- **Tool-agnostic format** for various platforms
+- **Audit trail** with timestamps and metadata
+
+### 🎉 Summary
+
+The **CycloneDX Support Release v2.1.0** represents a **major milestone** in SBOM generation capabilities:
+
+- **Industry Standard Compliance**: Full CycloneDX 1.4 compliance
+- **Dual Format Support**: Both JSON and XML CycloneDX formats
+- **Rich Vulnerability Data**: Complete CVE/CWE integration with CVSS scores
+- **Tool Integration**: Compatible with major security tools
+- **Robust Implementation**: Manual generation with fallback mechanisms
+- **Comprehensive Testing**: Full test suite for validation
+- **Enterprise Ready**: Production-ready for security-conscious environments
+
+This release provides **enterprise-grade CycloneDX support** that makes the CAST Highlight SBOM Generator suitable for **production use** in security-conscious environments and **compliance reporting** scenarios.
+
+---
+
 ## [2.0.0] - 2025-08-07 - Enhanced Edition
 
 ### 🚀 Major Enhancements

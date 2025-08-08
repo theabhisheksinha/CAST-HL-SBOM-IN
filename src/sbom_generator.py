@@ -1034,8 +1034,292 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
 
     @staticmethod
     def export_cyclonedx(sbom_data: Dict, filename: str, format: str = "json"):
-        logger.warning("CycloneDX export now uses the CLI tool. Calling export_cyclonedx_with_cli instead.")
-        SBOMExporter.export_cyclonedx_with_cli(filename.replace(f".{format}", ""), format=format)
+        """Export SBOM data in CycloneDX format (manual implementation)"""
+        try:
+            # Create CycloneDX structure manually
+            cyclonedx_bom = {
+                "bomFormat": "CycloneDX",
+                "specVersion": "1.4",
+                "version": 1,
+                "metadata": {
+                    "timestamp": sbom_data.get("metadata", {}).get("timestamp", datetime.utcnow().isoformat()),
+                    "tools": [
+                        {
+                            "vendor": "CAST Highlight SBOM Generator",
+                            "name": "SBOM Generator",
+                            "version": sbom_data.get("metadata", {}).get("version", "1.0")
+                        }
+                    ]
+                },
+                "components": []
+            }
+            
+            # Add application as metadata component
+            app_info = sbom_data.get("metadata", {}).get("application", {})
+            if app_info:
+                cyclonedx_bom["metadata"]["component"] = {
+                    "type": "application",
+                    "name": app_info.get("name", "Unknown Application"),
+                    "version": app_info.get("version", "Unknown"),
+                    "description": app_info.get("description", "")
+                }
+            
+            # Convert components to CycloneDX format
+            for comp_data in sbom_data.get("components", []):
+                cyclonedx_component = {
+                    "type": "library",
+                    "name": comp_data.get("name", "Unknown"),
+                    "version": comp_data.get("version", "Unknown"),
+                    "description": comp_data.get("description", "")
+                }
+                
+                # Add PURL
+                if comp_data.get("purl"):
+                    cyclonedx_component["purl"] = comp_data["purl"]
+                
+                # Add licenses
+                licenses = []
+                for license_info in comp_data.get("licenses", []):
+                    license_obj = {
+                        "id": license_info.get("licenseId", "Unknown"),
+                        "name": license_info.get("name", "Unknown")
+                    }
+                    if license_info.get("url"):
+                        license_obj["url"] = license_info["url"]
+                    licenses.append(license_obj)
+                
+                if licenses:
+                    cyclonedx_component["licenses"] = licenses
+                
+                # Add external references
+                ext_refs = []
+                for ref in comp_data.get("externalReferences", []):
+                    ref_type = "other"
+                    if ref.get("type") == "repository":
+                        ref_type = "vcs"
+                    elif ref.get("type") == "website":
+                        ref_type = "website"
+                    
+                    ext_ref = {
+                        "type": ref_type,
+                        "url": ref.get("url", "")
+                    }
+                    ext_refs.append(ext_ref)
+                
+                if ext_refs:
+                    cyclonedx_component["externalReferences"] = ext_refs
+                
+                # Add properties
+                properties = []
+                for prop in comp_data.get("properties", []):
+                    property_obj = {
+                        "name": prop.get("name", ""),
+                        "value": prop.get("value", "")
+                    }
+                    properties.append(property_obj)
+                
+                if properties:
+                    cyclonedx_component["properties"] = properties
+                
+                # Add vulnerabilities
+                vulnerabilities = []
+                for vuln_data in comp_data.get("vulnerabilities", []):
+                    vuln = {
+                        "id": vuln_data.get("id", "Unknown"),
+                        "description": vuln_data.get("description", "")
+                    }
+                    
+                    # Add CWE if available
+                    if vuln_data.get("cweId"):
+                        vuln["cwes"] = [vuln_data["cweId"]]
+                    
+                    # Add CPE if available
+                    if vuln_data.get("cpe"):
+                        vuln["cpe"] = vuln_data["cpe"]
+                    
+                    # Add rating if CVSS score is available
+                    if vuln_data.get("cvssScore"):
+                        try:
+                            cvss_score = float(vuln_data["cvssScore"])
+                            severity = "low"
+                            if cvss_score >= 9.0:
+                                severity = "critical"
+                            elif cvss_score >= 7.0:
+                                severity = "high"
+                            elif cvss_score >= 4.0:
+                                severity = "medium"
+                            
+                            vuln["ratings"] = [
+                                {
+                                    "source": {
+                                        "name": "CVSS",
+                                        "url": "https://www.first.org/cvss/"
+                                    },
+                                    "score": cvss_score,
+                                    "severity": severity,
+                                    "method": "CVSSv3"
+                                }
+                            ]
+                        except (ValueError, TypeError):
+                            pass
+                    
+                    # Add reference if available
+                    if vuln_data.get("link"):
+                        vuln["references"] = [
+                            {
+                                "id": vuln_data.get("id", "Unknown"),
+                                "source": {
+                                    "name": "CVE",
+                                    "url": vuln_data["link"]
+                                }
+                            }
+                        ]
+                    
+                    vulnerabilities.append(vuln)
+                
+                if vulnerabilities:
+                    cyclonedx_component["vulnerabilities"] = vulnerabilities
+                
+                cyclonedx_bom["components"].append(cyclonedx_component)
+            
+            # Export based on format
+            if format.lower() == "json":
+                with open(filename, 'w', encoding='utf-8') as f:
+                    json.dump(cyclonedx_bom, f, indent=2, ensure_ascii=False)
+                
+                logger.info(f"CycloneDX JSON SBOM exported to {filename}")
+                
+            elif format.lower() == "xml":
+                # Generate XML format
+                xml_content = SBOMExporter._cyclonedx_to_xml(cyclonedx_bom)
+                with open(filename, 'w', encoding='utf-8') as f:
+                    f.write(xml_content)
+                
+                logger.info(f"CycloneDX XML SBOM exported to {filename}")
+                
+            else:
+                logger.error(f"Unsupported CycloneDX format: {format}")
+                return
+                
+        except Exception as e:
+            logger.error(f"Failed to export CycloneDX: {e}")
+            # Fallback to CLI method if manual method fails
+            logger.info("Falling back to CLI method...")
+            SBOMExporter.export_cyclonedx_with_cli(filename.replace(f".{format}", ""), format=format)
+
+    @staticmethod
+    def _cyclonedx_to_xml(cyclonedx_bom):
+        """Convert CycloneDX BOM to XML format"""
+        xml_lines = [
+            '<?xml version="1.0" encoding="UTF-8"?>',
+            '<bom xmlns="http://cyclonedx.org/schema/bom/1.4"',
+            '     version="1"',
+            '     serialNumber="urn:uuid:' + SBOMExporter._generate_uuid() + '">'
+        ]
+        
+        # Metadata
+        metadata = cyclonedx_bom.get("metadata", {})
+        xml_lines.append('  <metadata>')
+        
+        if metadata.get("timestamp"):
+            xml_lines.append(f'    <timestamp>{metadata["timestamp"]}</timestamp>')
+        
+        # Tools
+        if metadata.get("tools"):
+            xml_lines.append('    <tools>')
+            for tool in metadata["tools"]:
+                xml_lines.append('      <tool>')
+                xml_lines.append(f'        <vendor>{tool.get("vendor", "")}</vendor>')
+                xml_lines.append(f'        <name>{tool.get("name", "")}</name>')
+                xml_lines.append(f'        <version>{tool.get("version", "")}</version>')
+                xml_lines.append('      </tool>')
+            xml_lines.append('    </tools>')
+        
+        # Component
+        if metadata.get("component"):
+            comp = metadata["component"]
+            xml_lines.append('    <component type="' + comp.get("type", "application") + '">')
+            xml_lines.append(f'      <name>{comp.get("name", "")}</name>')
+            xml_lines.append(f'      <version>{comp.get("version", "")}</version>')
+            if comp.get("description"):
+                xml_lines.append(f'      <description>{comp.get("description")}</description>')
+            xml_lines.append('    </component>')
+        
+        xml_lines.append('  </metadata>')
+        
+        # Components
+        if cyclonedx_bom.get("components"):
+            xml_lines.append('  <components>')
+            for comp in cyclonedx_bom["components"]:
+                xml_lines.append('    <component type="' + comp.get("type", "library") + '">')
+                xml_lines.append(f'      <name>{comp.get("name", "")}</name>')
+                xml_lines.append(f'      <version>{comp.get("version", "")}</version>')
+                if comp.get("description"):
+                    xml_lines.append(f'      <description>{comp.get("description")}</description>')
+                if comp.get("purl"):
+                    xml_lines.append(f'      <purl>{comp.get("purl")}</purl>')
+                
+                # Licenses
+                if comp.get("licenses"):
+                    xml_lines.append('      <licenses>')
+                    for license_info in comp["licenses"]:
+                        xml_lines.append('        <license>')
+                        xml_lines.append(f'          <id>{license_info.get("id", "")}</id>')
+                        xml_lines.append(f'          <name>{license_info.get("name", "")}</name>')
+                        if license_info.get("url"):
+                            xml_lines.append(f'          <url>{license_info.get("url")}</url>')
+                        xml_lines.append('        </license>')
+                    xml_lines.append('      </licenses>')
+                
+                # External References
+                if comp.get("externalReferences"):
+                    xml_lines.append('      <externalReferences>')
+                    for ref in comp["externalReferences"]:
+                        xml_lines.append('        <reference type="' + ref.get("type", "other") + '">')
+                        xml_lines.append(f'          <url>{ref.get("url", "")}</url>')
+                        xml_lines.append('        </reference>')
+                    xml_lines.append('      </externalReferences>')
+                
+                # Properties
+                if comp.get("properties"):
+                    xml_lines.append('      <properties>')
+                    for prop in comp["properties"]:
+                        xml_lines.append('        <property>')
+                        xml_lines.append(f'          <name>{prop.get("name", "")}</name>')
+                        xml_lines.append(f'          <value>{prop.get("value", "")}</value>')
+                        xml_lines.append('        </property>')
+                    xml_lines.append('      </properties>')
+                
+                # Vulnerabilities
+                if comp.get("vulnerabilities"):
+                    xml_lines.append('      <vulnerabilities>')
+                    for vuln in comp["vulnerabilities"]:
+                        xml_lines.append('        <vulnerability>')
+                        xml_lines.append(f'          <id>{vuln.get("id", "")}</id>')
+                        if vuln.get("description"):
+                            xml_lines.append(f'          <description>{vuln.get("description")}</description>')
+                        if vuln.get("cwes"):
+                            xml_lines.append('          <cwes>')
+                            for cwe in vuln["cwes"]:
+                                xml_lines.append(f'            <cwe>{cwe}</cwe>')
+                            xml_lines.append('          </cwes>')
+                        if vuln.get("cpe"):
+                            xml_lines.append(f'          <cpe>{vuln.get("cpe")}</cpe>')
+                        xml_lines.append('        </vulnerability>')
+                    xml_lines.append('      </vulnerabilities>')
+                
+                xml_lines.append('    </component>')
+            xml_lines.append('  </components>')
+        
+        xml_lines.append('</bom>')
+        
+        return '\n'.join(xml_lines)
+
+    @staticmethod
+    def _generate_uuid():
+        """Generate a simple UUID for CycloneDX"""
+        import uuid
+        return str(uuid.uuid4())
 
     @staticmethod
     def export_docx(sbom_data: Dict, filename: str):
@@ -1123,6 +1407,7 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
 
     @staticmethod
     def export_cyclonedx_with_cli(output_path: str, format: str = "json"):
+        """Fallback method using cyclonedx-py CLI tool"""
         fmt = "JSON" if format == "json" else "XML"
         result = subprocess.run(
             [
