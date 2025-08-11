@@ -36,6 +36,10 @@ Your SBOM generator creates fully compliant CycloneDX 1.4 documents with:
 
 ### ✅ CAST Highlight Data Integration
 
+#### **Accurate Application Metadata**
+
+As of v2.1.2, the application name is now correctly displayed in the CycloneDX metadata. The `component.name` field in the metadata section now shows the actual application name (e.g., "WebGoat") instead of "Unknown", providing more accurate and useful information in the SBOM.
+
 #### **Clean Property Names**
 
 As of v2.1.1, all property names have been standardized by removing the 'cast:' prefix, resulting in cleaner, more consistent output. For example:

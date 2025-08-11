@@ -1,5 +1,15 @@
 # Changelog - CAST Highlight SBOM Generator
 
+## [2.1.2] - 2025-08-11 - Application Name Fix
+
+### 🐛 Bug Fixes
+- **Fixed Application Name**: Corrected the application name in SBOM metadata to use the actual application name instead of "Unknown"
+- **Improved Metadata**: Application name now correctly appears in both standard JSON and CycloneDX output formats
+
+### 🛠️ Files Modified
+- `src/sbom_builder.py` - Updated to retrieve application name from comprehensive data
+- `src/main.py` - Modified to pass application name to the SBOM builder
+
 ## [2.1.1] - 2025-08-11 - Property Name Enhancement
 
 ### 🔧 Enhancements

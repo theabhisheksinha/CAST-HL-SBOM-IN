@@ -8,7 +8,11 @@ This enhanced application connects to the CAST Highlight API to extract comprehe
 
 ## ✨ Key Enhancements
 
-### **Latest Improvements (v2.1.1)**
+### **Latest Improvements (v2.1.2)**
+- **Fixed Application Name**: Corrected application name in SBOM metadata
+- **Accurate Metadata**: Application name now correctly appears in all output formats
+
+### **Previous Improvements (v2.1.1)**
 - **Standardized Property Names**: Removed 'cast:' prefix from all property names
 - **Improved Readability**: Cleaner, more consistent output in all formats
 - **Enhanced Integration**: Better compatibility with third-party tools
