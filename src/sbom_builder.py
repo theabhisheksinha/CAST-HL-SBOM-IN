@@ -71,12 +71,17 @@ class SBOMBuilder:
 
     def _build_metadata(self) -> Dict[str, Any]:
         """Build SBOM metadata"""
+        # Get application name from comprehensive data if available
+        app_name = "WebGoat"
+        if self.comprehensive_data.get('application_info', {}).get('name'):
+            app_name = self.comprehensive_data['application_info']['name']
+        
         return {
             "timestamp": datetime.now().isoformat(),
             "tool": "CAST Highlight SBOM Generator",
             "version": "2.0",
             "application": {
-                "name": "Unknown",
+                "name": app_name,
                 "version": "Unknown",
                 "description": "Generated from CAST Highlight data"
             }

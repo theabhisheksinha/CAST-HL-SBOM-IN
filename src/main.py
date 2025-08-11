@@ -107,6 +107,12 @@ def main():
     # Build comprehensive SBOM
     try:
         logger.info("Building comprehensive SBOM from multiple data sources")
+        # Add application name to the comprehensive data
+        if app_name:
+            if 'application_info' not in comprehensive_data:
+                comprehensive_data['application_info'] = {}
+            comprehensive_data['application_info']['name'] = app_name
+        
         sbom_builder = SBOMBuilder(comprehensive_data)
         sbom = sbom_builder.build()
         
@@ -214,4 +220,4 @@ def _log_field_coverage(sbom):
             logger.info(f"     * {prop_name}: {count} components ({percentage:.1f}%)")
 
 if __name__ == '__main__':
-    main() 
+    main()
