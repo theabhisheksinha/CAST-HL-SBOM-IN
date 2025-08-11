@@ -150,23 +150,32 @@ class SBOMBuilder:
         """Convert third-party component data to SBOM format"""
         try:
             # Extract basic component information
+            # Ensure description is properly extracted from all possible sources
+            description = ""
+            if component_data.get("description") and isinstance(component_data.get("description"), str):
+                description = component_data.get("description")
+            elif component_data.get("componentDescription") and isinstance(component_data.get("componentDescription"), str):
+                description = component_data.get("componentDescription")
+            elif component_data.get("details", {}).get("description") and isinstance(component_data.get("details", {}).get("description"), str):
+                description = component_data.get("details", {}).get("description")
+                
             component = {
                 "type": "library",
                 "name": component_data.get("name", "Unknown"),
                 "version": component_data.get("version", "Unknown"),
-                "description": component_data.get("description", ""),
+                "description": description,
                 "purl": self._generate_purl(component_data),
                 "externalReferences": self._get_external_references(component_data),
                 "properties": self._extract_comprehensive_properties(component_data),
                 "licenses": [],
                 "vulnerabilities": [],
-                # Fields that CAST Highlight cannot provide
+                # Fields that CAST Highlight can provide
                 "supplier": {
-                    "name": "Unavailable from CAST Highlight",
-                    "contact": "Unavailable from CAST Highlight"
+                    "name": component_data.get("supplier", "Unknown"),
+                    "contact": component_data.get("supplierContact", "Unknown")
                 },
-                "author": "Unavailable from CAST Highlight",
-                "copyright": "Unavailable from CAST Highlight"
+                # Only include author at SBOM level, not component level
+                "copyright": component_data.get("copyright", "Unknown")
             }
             
             # Extract embedded vulnerabilities
@@ -216,8 +225,19 @@ class SBOMBuilder:
         if component_data.get("releaseDate"):
             properties.append({"name": "cast:releaseDate", "value": str(component_data["releaseDate"])})
         
+        # Check multiple possible sources for EOL date
+        eol_date = None
         if component_data.get("eolDate"):
-            properties.append({"name": "cast:eolDate", "value": str(component_data["eolDate"])})
+            eol_date = component_data["eolDate"]
+        elif component_data.get("endOfLifeDate"):
+            eol_date = component_data["endOfLifeDate"]
+        elif component_data.get("endOfLife"):
+            eol_date = component_data["endOfLife"]
+        elif component_data.get("details", {}).get("eolDate"):
+            eol_date = component_data["details"]["eolDate"]
+            
+        if eol_date:
+            properties.append({"name": "cast:eolDate", "value": str(eol_date)})
         
         if component_data.get("lastVersion"):
             properties.append({"name": "cast:lastVersion", "value": str(component_data["lastVersion"])})
@@ -242,6 +262,20 @@ class SBOMBuilder:
         
         if component_data.get("hash"):
             properties.append({"name": "cast:hash", "value": str(component_data["hash"])})
+            
+        # Add fingerprint as hash if available
+        if component_data.get("fingerprint"):
+            properties.append({"name": "cast:fingerprint", "value": str(component_data["fingerprint"])})
+            
+        # Add SHA1, SHA256, MD5 if available
+        if component_data.get("sha1"):
+            properties.append({"name": "cast:sha1", "value": str(component_data["sha1"])})
+            
+        if component_data.get("sha256"):
+            properties.append({"name": "cast:sha256", "value": str(component_data["sha256"])})
+            
+        if component_data.get("md5"):
+            properties.append({"name": "cast:md5", "value": str(component_data["md5"])})
         
         # Comments and notes
         if component_data.get("comments"):
@@ -405,9 +439,13 @@ class SBOMBuilder:
             if not component.get("version"):
                 component["version"] = "Unknown"
             
-            # Add timestamp if not present
-            if not component.get("timestamp"):
-                component["timestamp"] = datetime.now().isoformat()
+            # Remove timestamp at component level as it's not required
+            if "timestamp" in component:
+                del component["timestamp"]
+            
+            # Remove author field at component level as it's not required
+            if "author" in component:
+                del component["author"]
             
             # Ensure arrays are present
             if not component.get("licenses"):
@@ -417,4 +455,35 @@ class SBOMBuilder:
             if not component.get("properties"):
                 component["properties"] = []
             if not component.get("externalReferences"):
-                component["externalReferences"] = [] 
+                component["externalReferences"] = []
+                
+            # Ensure component properties are consistent
+            self._normalize_component_properties(component)
+            
+    def _normalize_component_properties(self, component: Dict[str, Any]):
+        """Normalize component properties to ensure consistency"""
+        # Create a map of existing properties for easy lookup
+        property_map = {}
+        for prop in component.get("properties", []):
+            property_map[prop["name"]] = prop["value"]
+            
+        # Ensure critical properties are present with correct values
+        # Check for checksums/hashes
+        if "cast:fingerprint" not in property_map and "cast:hash" not in property_map and "cast:checksum" not in property_map:
+            # Try to extract from other fields
+            if component.get("fingerprint"):
+                component["properties"].append({"name": "cast:fingerprint", "value": str(component["fingerprint"])})
+            elif component.get("hash"):
+                component["properties"].append({"name": "cast:hash", "value": str(component["hash"])})
+                
+        # Ensure EOL date is present if available
+        if "cast:eolDate" not in property_map and component.get("eolDate"):
+            component["properties"].append({"name": "cast:eolDate", "value": str(component["eolDate"])})
+            
+        # Ensure description is properly set
+        if not component.get("description") and "cast:description" in property_map:
+            component["description"] = property_map["cast:description"]
+            
+        # Ensure copyright is properly set
+        if component.get("copyright") == "Unknown" and "cast:copyright" in property_map:
+            component["copyright"] = property_map["cast:copyright"]

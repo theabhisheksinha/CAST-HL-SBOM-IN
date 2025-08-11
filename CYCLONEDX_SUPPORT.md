@@ -36,6 +36,16 @@ Your SBOM generator creates fully compliant CycloneDX 1.4 documents with:
 
 ### ✅ CAST Highlight Data Integration
 
+#### **Clean Property Names**
+
+As of v2.1.1, all property names have been standardized by removing the 'cast:' prefix, resulting in cleaner, more consistent output. For example:
+- `cast:languages` → `languages`
+- `cast:releaseDate` → `releaseDate`
+- `cast:origin` → `origin`
+- `cast:lastVersion` → `lastVersion`
+
+This improves readability and compatibility with third-party tools while maintaining all the same valuable information.
+
 The generator maps CAST Highlight API data to CycloneDX format:
 
 | CAST Highlight Field | CycloneDX Field | Description |

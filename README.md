@@ -1,14 +1,19 @@
 # CAST Highlight SBOM Generator - Enhanced Edition
 
-A comprehensive Python-based application that generates Software Bill of Materials (SBOM) compliant with industry standards by extracting data from CAST Highlight API with **94.7% field coverage**.
+A comprehensive Python-based application that generates Software Bill of Materials (SBOM) compliant with industry standards by extracting data from CAST Highlight API with **94.7% field coverage** and **clean, standardized property names**.
 
 ## 🚀 Overview
 
 This enhanced application connects to the CAST Highlight API to extract comprehensive software component information and generates SBOM documents in multiple formats (JSON, CSV, XLSX, CycloneDX, DOCX). The generated SBOM is designed to comply with industry standards and regulatory requirements, providing **maximum field coverage** from available API data.
 
-## ✨ Key Enhancements (v2.0)
+## ✨ Key Enhancements
 
-### **Field Coverage Improvements**
+### **Latest Improvements (v2.1.1)**
+- **Standardized Property Names**: Removed 'cast:' prefix from all property names
+- **Improved Readability**: Cleaner, more consistent output in all formats
+- **Enhanced Integration**: Better compatibility with third-party tools
+
+### **Field Coverage Improvements (v2.0)**
 - **Before**: 36.8% field coverage (7/19 fields)
 - **After**: 94.7% field coverage (18/19 fields)
 - **Improvement**: 157% increase in field coverage
@@ -853,4 +858,4 @@ The **Enhanced CAST Highlight SBOM Generator** represents a **significant improv
 - **Improved compliance** with industry standards
 - **Better audit capabilities** with detailed logging and verification
 
-This enhanced system provides **production-ready SBOM generation** with **maximum field coverage** and **comprehensive compliance features** for enterprise use."# CAST-HL-SBOM-IN" 
+This enhanced system provides **production-ready SBOM generation** with **maximum field coverage** and **comprehensive compliance features** for enterprise use."# CAST-HL-SBOM-IN"

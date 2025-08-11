@@ -19,9 +19,28 @@ except ImportError:
 class SBOMExporter:
     @staticmethod
     def export_json(sbom, filename):
+        # Process the SBOM to remove 'cast:' prefixes from property names
+        processed_sbom = SBOMExporter._process_sbom_properties(sbom)
+        
         with open(filename, 'w', encoding='utf-8') as f:
-            json.dump(sbom, f, indent=2)
+            json.dump(processed_sbom, f, indent=2)
         logging.info(f"SBOM exported to {filename}")
+        
+    @staticmethod
+    def _process_sbom_properties(sbom):
+        """Remove 'cast:' prefix from property names in the SBOM"""
+        # Create a deep copy to avoid modifying the original
+        processed_sbom = json.loads(json.dumps(sbom))
+        
+        # Process each component
+        for component in processed_sbom.get("components", []):
+            # Process properties
+            if "properties" in component:
+                for prop in component["properties"]:
+                    if "name" in prop and prop["name"].startswith("cast:"):
+                        prop["name"] = prop["name"].replace("cast:", "")
+                        
+        return processed_sbom
 
     @staticmethod
     def export_cyclonedx(sbom_data: Dict, filename: str, format: str = "json"):
@@ -63,6 +82,10 @@ class SBOMExporter:
                     "version": comp_data.get("version", "Unknown"),
                     "description": comp_data.get("description", "")
                 }
+                
+                # Add copyright if available
+                if comp_data.get("copyright") and comp_data.get("copyright") != "Unknown":
+                    cyclonedx_component["copyright"] = comp_data.get("copyright")
 
                 # Add PURL
                 if comp_data.get("purl"):
@@ -103,11 +126,30 @@ class SBOMExporter:
                 # Add properties
                 properties = []
                 for prop in comp_data.get("properties", []):
-                    property_obj = {
-                        "name": prop.get("name", ""),
-                        "value": prop.get("value", "")
-                    }
-                    properties.append(property_obj)
+                    # Skip properties that are already represented in other fields
+                    if prop.get("name") in ["cast:timestamp"]:
+                        continue
+                        
+                    # Ensure checksum/hash properties are properly formatted
+                    if prop.get("name") in ["cast:checksum", "cast:hash", "cast:fingerprint", "cast:sha1", "cast:sha256", "cast:md5"]:
+                        hash_type = prop.get("name").replace("cast:", "")
+                        if "hashes" not in cyclonedx_component:
+                            cyclonedx_component["hashes"] = []
+                        cyclonedx_component["hashes"].append({
+                            "alg": hash_type.upper(),
+                            "content": prop.get("value", "")
+                        })
+                    else:
+                        # Remove 'cast:' prefix from property names
+                        prop_name = prop.get("name", "")
+                        if prop_name.startswith("cast:"):
+                            prop_name = prop_name.replace("cast:", "")
+                            
+                        property_obj = {
+                            "name": prop_name,
+                            "value": prop.get("value", "")
+                        }
+                        properties.append(property_obj)
 
                 if properties:
                     cyclonedx_component["properties"] = properties
@@ -545,4 +587,4 @@ class SBOMExporter:
                     vuln.get("link", "")
                 ])
         wb.save(filename)
-        logging.info(f"SBOM exported to {filename}") 
+        logging.info(f"SBOM exported to {filename}")

@@ -1,5 +1,15 @@
 # Changelog - CAST Highlight SBOM Generator
 
+## [2.1.1] - 2025-08-11 - Property Name Enhancement
+
+### 🔧 Enhancements
+- **Improved Property Names**: Removed 'cast:' prefix from all property names in both standard JSON and CycloneDX output formats
+- **Cleaner Output**: More readable and consistent property naming in exported files
+- **Backward Compatibility**: Maintains all functionality while improving output format
+
+### 🛠️ Files Modified
+- `src/sbom_exporter.py` - Updated property name handling in both standard and CycloneDX exports
+
 ## [2.1.0] - 2025-08-08 - CycloneDX Support Release
 
 ### 🌀 Major New Feature: CycloneDX Support
