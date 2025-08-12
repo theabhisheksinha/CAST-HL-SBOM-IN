@@ -1,0 +1,83 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.4",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2025-08-11T16:32:56.888411",
+    "tools": [
+      {
+        "vendor": "CAST Highlight SBOM Generator",
+        "name": "SBOM Generator",
+        "version": "2.0"
+      }
+    ],
+    "component": {
+      "type": "application",
+      "name": "WebGoat",
+      "version": "Unknown",
+      "description": "Generated from CAST Highlight data"
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "test-component",
+      "version": "1.0.0",
+      "description": "This is a test component description",
+      "copyright": "Copyright (c) 2023 Test Company",
+      "purl": "pkg:maven/test-component@1.0.0",
+      "licenses": [
+        {
+          "id": "MIT",
+          "name": "MIT",
+          "url": "https://opensource.org/licenses/MIT"
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "FINGERPRINT",
+          "content": "abc123def456"
+        },
+        {
+          "alg": "SHA1",
+          "content": "sha1hash"
+        },
+        {
+          "alg": "SHA256",
+          "content": "sha256hash"
+        },
+        {
+          "alg": "MD5",
+          "content": "md5hash"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cast:packageType",
+          "value": "maven"
+        },
+        {
+          "name": "cast:eolDate",
+          "value": "2025-12-31"
+        }
+      ],
+      "vulnerabilities": [
+        {
+          "id": "CVE-2023-1234",
+          "description": "Test vulnerability",
+          "ratings": [
+            {
+              "source": {
+                "name": "CVSS",
+                "url": "https://www.first.org/cvss/"
+              },
+              "score": 7.5,
+              "severity": "high",
+              "method": "CVSSv3"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
