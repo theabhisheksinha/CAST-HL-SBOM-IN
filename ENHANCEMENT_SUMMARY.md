@@ -202,7 +202,7 @@ The enhanced system now extracts **20+ different property types** from the API r
 ### Enhanced Quality Scoring
 The new system uses 7 quality criteria instead of 5:
 1. Vulnerability data presence
-2. Multiple worksheet organization  
+2. Multiple worksheet organization
 3. Security analysis inclusion
 4. Metadata tracking
 5. Component coverage
@@ -261,3 +261,33 @@ The enhanced SBOM Generator now provides:
 - **Better audit capabilities** with detailed logging and verification
 
 This represents a **significant improvement** in the SBOM generation capabilities, providing much more comprehensive and useful output for compliance and security analysis purposes.
+## 2025-08-12 - Implemented `get_value` Helper Function
+
+**Description:**
+A new helper function `get_value` was introduced to standardize the handling of potentially empty or null values across the SBOM generation and export process. This function ensures that if a value is `None`, an empty string, or a string containing only whitespace, it defaults to "unavailable" (or a specified default), improving data consistency in the generated SBOMs.
+
+**Changes Made:**
+
+1.  **`src/sbom_generator.py`**:
+    *   Added the `get_value` function at the top of the file.
+    *   Integrated `get_value` into the `SBOMGenerator` class, specifically in:
+        *   `generate_sbom`: For application metadata fields (`name`, `version`, `description`).
+        *   `_convert_to_sbom_component`: For various component fields (e.g., `name`, `version`, `description`, `supplier`, `author`, `copyright`, `vulnerabilities` sub-fields) and when generating PURL and external references.
+        *   `_get_external_references`: To ensure URLs are only added if they are not "unavailable".
+        *   `_get_component_properties`: To ensure properties are only added if their values are not "unavailable".
+        *   `_add_vulnerabilities_to_components`: For vulnerability fields (`id`, `description`, `severity`, `cvssScore`, `publishedDate`, `references`).
+        *   `_add_licenses_to_components`: For license fields (`licenseId`, `name`, `url`, `compliance`).
+
+2.  **`src/sbom_exporter.py`**:
+    *   Added the `get_value` function at the top of the file.
+    *   Integrated `get_value` into the `SBOMExporter` class, specifically in:
+        *   `export_json`: For all component fields and properties to ensure consistent "unavailable" values in the JSON output.
+        *   `_process_sbom_properties`: To handle property names that might be empty or whitespace.
+        *   `export_cyclonedx`: For all fields within the CycloneDX BOM structure, including metadata, components, licenses, external references, properties, and vulnerabilities.
+        *   `_cyclonedx_to_xml`: To ensure all XML elements use the `get_value` function for consistent output.
+        *   `export_docx`: For all fields in the DOCX output, including metadata and component table data.
+        *   `export_csv`: For all fields in the CSV output, ensuring consistent "unavailable" values.
+        *   `export_xlsx`: For all fields in the XLSX output, including component and vulnerability sheets.
+
+**Purpose:**
+The primary purpose of these changes is to enhance the robustness and consistency of the SBOM generation and export. By explicitly handling `None` or empty string values and replacing them with "unavailable", the SBOM output becomes more predictable and easier to parse, especially for downstream tools or human readers who rely on consistent data representation. This prevents empty strings or `None` values from appearing in the final SBOM, which can sometimes be misinterpreted or cause issues in other systems.

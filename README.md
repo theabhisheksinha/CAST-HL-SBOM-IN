@@ -9,6 +9,7 @@ This enhanced application connects to the CAST Highlight API to extract comprehe
 ## ✨ Key Enhancements
 
 ### **Latest Improvements (v2.1.2)**
+- **Standardized Empty/Null Values**: Implemented `get_value` helper to return "unavailable" for empty or null fields, ensuring consistent SBOM output.
 - **Fixed Application Name**: Corrected application name in SBOM metadata
 - **Accurate Metadata**: Application name now correctly appears in all output formats
 

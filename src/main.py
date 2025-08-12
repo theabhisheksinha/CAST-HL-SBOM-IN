@@ -22,10 +22,11 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 import sys
-from src.config_loader import load_config, ConfigError
-from src.highlight_api import HighlightAPI
-from src.sbom_builder import SBOMBuilder
-from src.sbom_exporter import SBOMExporter
+import json
+from config_loader import load_config, ConfigError
+from highlight_api import HighlightAPI
+from sbom_builder import SBOMBuilder
+from sbom_exporter import SBOMExporter
 
 def main():
     config_path = 'config/config.json'
@@ -125,6 +126,11 @@ def main():
     except Exception as e:
         logger.error(f'Failed to build SBOM: {e}')
         sys.exit(1)
+
+    print("====================================")
+    print("Generated SBOM data:")
+    print(json.dumps(sbom, indent=2))
+    print("====================================")
 
     # Export SBOM
     try:

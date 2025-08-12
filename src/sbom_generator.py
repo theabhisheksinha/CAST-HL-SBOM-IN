@@ -268,6 +268,13 @@ class HighlightAPI:
             return []
 
 
+def get_value(value, default="unavailable"):
+    """Returns the value if not None or empty, otherwise returns the default."""
+    if value is None or (isinstance(value, str) and not value.strip()):
+        return default
+    return value
+
+
 class SBOMGenerator:
     """Generate SBOM data from CAST Highlight information"""
 
@@ -291,9 +298,9 @@ class SBOMGenerator:
         app_details = self.cast_api.get_application_details(app_id)
         if app_details:
             self.sbom_data["metadata"]["application"] = {
-                "name": app_details.get("name", "Unknown"),
-                "version": app_details.get("version", "Unknown"),
-                "description": app_details.get("description", ""),
+                "name": get_value(app_details.get("name")),
+                "version": get_value(app_details.get("version")),
+                "description": get_value(app_details.get("description")),
             }
 
         # Get components
@@ -327,46 +334,45 @@ class SBOMGenerator:
                 for vuln in cast_component["cve"]["vulnerabilities"]:
                     vulnerabilities.append(
                         {
-                            "id": vuln.get("name", "Unknown"),
-                            "description": vuln.get("description", ""),
-                            "severity": vuln.get("criticity", "Unknown"),
-                            "cvssScore": vuln.get("cvssScore"),
-                            "cweId": vuln.get("cweId"),
-                            "cpe": vuln.get("cpe"),
+                            "id": get_value(vuln.get("name")),
+                            "description": get_value(vuln.get("description")),
+                            "severity": get_value(vuln.get("criticity")),
+                            "cvssScore": get_value(vuln.get("cvssScore")),
+                            "cweId": get_value(vuln.get("cweId")),
+                            "cpe": get_value(vuln.get("cpe")),
                             "isKev": vuln.get("isKev", False),
-                            "link": vuln.get("link", ""),
+                            "link": get_value(vuln.get("link")),
                         }
                     )
 
             return {
                 "type": "library",
-                "name": cast_component.get("name", "Unknown"),
-                "version": cast_component.get("version", "Unknown"),
-                "description": cast_component.get("description", ""),
+                "name": get_value(cast_component.get("name")),
+                "version": get_value(cast_component.get("version")),
+                "description": get_value(cast_component.get("description")),
                 "purl": self._generate_purl(cast_component),
                 "externalReferences": self._get_external_references(cast_component),
                 "properties": self._get_component_properties(cast_component),
-                # Fields that CAST Highlight cannot provide (marked as unavailable)
                 "supplier": {
-                    "name": "Unavailable from CAST Highlight",
-                    "contact": "Unavailable from CAST Highlight",
+                    "name": get_value(cast_component.get("supplierName")),
+                    "contact": get_value(cast_component.get("supplierContact")),
                 },
-                "author": "Unavailable from CAST Highlight",
-                "copyright": "Unavailable from CAST Highlight",
+                "author": get_value(cast_component.get("author")),
+                "copyright": get_value(cast_component.get("copyright")),
                 "licenses": [],  # Will be populated later
                 "vulnerabilities": vulnerabilities,  # Extract from component's cve field
             }
         except Exception as e:
             logger.error(
-                f"Error converting component {cast_component.get('name', 'Unknown')}: {e}"
+                f"Error converting component {cast_component.get('name', 'unavailable')}: {e}"
             )
             return None
 
     def _generate_purl(self, component: Dict) -> str:
         """Generate Package URL (PURL) for component"""
-        name = component.get("name", "")
-        version = component.get("version", "")
-        package_type = component.get("packageType", "generic")
+        name = get_value(component.get("name"))
+        version = get_value(component.get("version"))
+        package_type = get_value(component.get("packageType"), default="generic")
 
         if package_type == "maven":
             return f"pkg:maven/{name}@{version}"
@@ -383,11 +389,11 @@ class SBOMGenerator:
         """Get external references for component"""
         references = []
 
-        if component.get("repositoryUrl"):
-            references.append({"type": "repository", "url": component["repositoryUrl"]})
+        if get_value(component.get("repositoryUrl")) != "unavailable":
+            references.append({"type": "repository", "url": get_value(component["repositoryUrl"])})
 
-        if component.get("homepageUrl"):
-            references.append({"type": "website", "url": component["homepageUrl"]})
+        if get_value(component.get("homepageUrl")) != "unavailable":
+            references.append({"type": "website", "url": get_value(component["homepageUrl"])})
 
         return references
 
@@ -396,31 +402,80 @@ class SBOMGenerator:
         properties = []
 
         # Add CAST Highlight specific properties
-        if component.get("packageType"):
+        if get_value(component.get("packageType")) != "unavailable":
             properties.append(
-                {"name": "cast:packageType", "value": component["packageType"]}
+                {"name": "cast:packageType", "value": get_value(component["packageType"])}
             )
 
-        if component.get("filePath"):
-            properties.append({"name": "cast:filePath", "value": component["filePath"]})
+        if get_value(component.get("filePath")) != "unavailable":
+            properties.append({"name": "cast:filePath", "value": get_value(component["filePath"])}
+            )
+
+        if get_value(component.get("origin")) != "unavailable":
+            properties.append({"name": "cast:origin", "value": get_value(component["origin"])}
+            )
+
+        if get_value(component.get("dependencies")) != "unavailable":
+            properties.append({"name": "cast:dependencies", "value": get_value(component["dependencies"])}
+            )
+
+        if get_value(component.get("patchStatus")) != "unavailable":
+            properties.append({"name": "cast:patchStatus", "value": get_value(component["patchStatus"])}
+            )
+
+        if get_value(component.get("releaseDate")) != "unavailable":
+            properties.append({"name": "cast:releaseDate", "value": get_value(component["releaseDate"])}
+            )
+
+        if get_value(component.get("eolDate")) != "unavailable":
+            properties.append({"name": "cast:eolDate", "value": get_value(component["eolDate"])}
+            )
+
+        if get_value(component.get("criticality")) != "unavailable":
+            properties.append({"name": "cast:criticality", "value": get_value(component["criticality"])}
+            )
+
+        if get_value(component.get("usageRestrictions")) != "unavailable":
+            properties.append({"name": "cast:usageRestrictions", "value": get_value(component["usageRestrictions"])}
+            )
+
+        if get_value(component.get("checksum")) != "unavailable":
+            properties.append({"name": "cast:checksum", "value": get_value(component["checksum"])}
+            )
+
+        if get_value(component.get("comments")) != "unavailable":
+            properties.append({"name": "cast:comments", "value": get_value(component["comments"])}
+            )
+
+        if get_value(component.get("executable")) != "unavailable":
+            properties.append({"name": "cast:executable", "value": get_value(component["executable"])}
+            )
+
+        if get_value(component.get("archive")) != "unavailable":
+            properties.append({"name": "cast:archive", "value": get_value(component["archive"])}
+            )
+
+        if get_value(component.get("structured")) != "unavailable":
+            properties.append({"name": "cast:structured", "value": get_value(component["structured"])}
+            )
 
         return properties
 
     def _add_vulnerabilities_to_components(self, vulnerabilities: List[Dict]):
         """Add vulnerability information to components"""
         for vuln in vulnerabilities:
-            component_name = vuln.get("componentName")
-            if component_name:
+            component_name = get_value(vuln.get("componentName"))
+            if component_name != "unavailable":
                 # Find matching component
                 for component in self.sbom_data["components"]:
                     if component["name"] == component_name:
                         component["vulnerabilities"].append(
                             {
-                                "id": vuln.get("cveId", "Unknown"),
-                                "description": vuln.get("description", ""),
-                                "severity": vuln.get("severity", "Unknown"),
-                                "cvssScore": vuln.get("cvssScore"),
-                                "publishedDate": vuln.get("publishedDate"),
+                                "id": get_value(vuln.get("cveId")),
+                                "description": get_value(vuln.get("description")),
+                                "severity": get_value(vuln.get("severity")),
+                                "cvssScore": get_value(vuln.get("cvssScore")),
+                                "publishedDate": get_value(vuln.get("publishedDate")),
                                 "references": vuln.get("references", []),
                             }
                         )
@@ -429,17 +484,17 @@ class SBOMGenerator:
     def _add_licenses_to_components(self, licenses: List[Dict]):
         """Add license information to components"""
         for license_info in licenses:
-            component_name = license_info.get("componentName")
-            if component_name:
+            component_name = get_value(license_info.get("componentName"))
+            if component_name != "unavailable":
                 # Find matching component
                 for component in self.sbom_data["components"]:
                     if component["name"] == component_name:
                         component["licenses"].append(
                             {
-                                "licenseId": license_info.get("licenseId", "Unknown"),
-                                "name": license_info.get("licenseName", "Unknown"),
-                                "url": license_info.get("licenseUrl", ""),
-                                "compliance": license_info.get("compliance", "Unknown"),
+                                "licenseId": get_value(license_info.get("licenseId")),
+                                "name": get_value(license_info.get("licenseName")),
+                                "url": get_value(license_info.get("licenseUrl")),
+                                "compliance": get_value(license_info.get("compliance")),
                             }
                         )
                         break
@@ -461,17 +516,17 @@ class SBOMExporter:
             component["component_license"] = "; ".join(
                 [lic.get("name", "") for lic in component.get("licenses", [])]
             )
-            component["component_origin"] = properties.get("cast:origin", "Unknown")
+            component["component_origin"] = properties.get("cast:origin", "unavailable")
             component["component_dependencies"] = properties.get(
-                "cast:dependencies", "Unknown"
+                "cast:dependencies", "unavailable"
             )
             component["vulnerabilities_count"] = str(
                 len(component.get("vulnerabilities", []))
             )
-            component["patch_status"] = properties.get("cast:patchStatus", "Unknown")
+            component["patch_status"] = properties.get("cast:patchStatus", "unavailable")
             component["release_date"] = properties.get("cast:releaseDate", "")
             component["eol_date"] = properties.get("cast:eolDate", "")
-            component["criticality"] = properties.get("cast:criticality", "Unknown")
+            component["criticality"] = properties.get("cast:criticality", "unavailable")
             component["usage_restrictions"] = properties.get(
                 "cast:usageRestrictions", "None"
             )
@@ -540,13 +595,13 @@ class SBOMExporter:
                                 for lic in component.get("licenses", [])
                             ]
                         ),
-                        properties.get("cast:origin", "Unknown"),
-                        properties.get("cast:dependencies", "Unknown"),
+                        properties.get("cast:origin", "unavailable"),
+                        properties.get("cast:dependencies", "unavailable"),
                         str(len(component.get("vulnerabilities", []))),
-                        properties.get("cast:patchStatus", "Unknown"),
+                        properties.get("cast:patchStatus", "unavailable"),
                         properties.get("cast:releaseDate", ""),
                         properties.get("cast:eolDate", ""),
-                        properties.get("cast:criticality", "Unknown"),
+                        properties.get("cast:criticality", "unavailable"),
                         properties.get("cast:usageRestrictions", "None"),
                         properties.get("cast:checksum", ""),
                         properties.get("cast:comments", ""),
@@ -580,7 +635,7 @@ class SBOMExporter:
             spdx_content = f"""SPDXVersion: SPDX-2.2
 DataLicense: CC0-1.0
 SPDXID: SPDXRef-DOCUMENT
-DocumentName: {sbom_data.get('metadata', {}).get('application', {}).get('name', 'Unknown Application')} SBOM
+DocumentName: {sbom_data.get('metadata', {}).get('application', {}).get('name', 'unavailable')} SBOM
 DocumentNamespace: http://spdx.org/spdxdocs/cast-highlight-sbom-{datetime.now().strftime('%Y%m%d-%H%M%S')}
 Creator: Tool: CAST Highlight SBOM Generator
 Created: {datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')}
@@ -594,9 +649,9 @@ Created: {datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')}
                 if not filtered_license_ids:
                     filtered_license_ids = ['NOASSERTION']
 
-                spdx_content += f"""PackageName: {component.get('name', 'Unknown')}
+                spdx_content += f"""PackageName: {component.get('name', 'unavailable')}
 SPDXID: SPDXRef-Package-{i}
-PackageVersion: {component.get('version', 'Unknown')}
+PackageVersion: {component.get('version', 'unavailable')}
 PackageDownloadLocation: NOASSERTION
 PackageLicenseConcluded: {'; '.join(filtered_license_ids)}
 PackageLicenseDeclared: {'; '.join(filtered_license_ids)}
@@ -632,7 +687,9 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
         # 1. SBOM Overview/Summary Sheet
         ws_summary = wb.create_sheet(title="SBOM Summary")
         ws_summary.append(["SBOM Information", "Value"])
-        ws_summary.append(["SBOM Version", sbom_data.get("sbomVersion", "1.0")])
+        ws_summary.append(
+            ["SBOM Version", sbom_data.get("sbomVersion", "1.0")]
+        )
         ws_summary.append(
             ["Generated Timestamp", sbom_data.get("metadata", {}).get("timestamp", "")]
         )
@@ -714,15 +771,15 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
                     "; ".join(
                         [lic.get("name", "") for lic in component.get("licenses", [])]
                     ),
-                    properties.get("cast:origin", "Unknown"),  # Component Origin
+                    properties.get("cast:origin", "unavailable"),  # Component Origin
                     properties.get(
-                        "cast:dependencies", "Unknown"
+                        "cast:dependencies", "unavailable"
                     ),  # Component Dependencies
                     str(len(component.get("vulnerabilities", []))),
-                    properties.get("cast:patchStatus", "Unknown"),  # Patch Status
+                    properties.get("cast:patchStatus", "unavailable"),  # Patch Status
                     properties.get("cast:releaseDate", ""),  # Release Date
                     properties.get("cast:eolDate", ""),  # EOL Date
-                    properties.get("cast:criticality", "Unknown"),  # Criticality
+                    properties.get("cast:criticality", "unavailable"),  # Criticality
                     properties.get(
                         "cast:usageRestrictions", "None"
                     ),  # Usage Restrictions
@@ -780,7 +837,7 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
                         vuln.get("link", ""),
                         "Yes" if vuln.get("isKev", False) else "No",
                         vuln.get("publishedDate", ""),
-                        vuln.get("patchStatus", "Unknown"),
+                        vuln.get("patchStatus", "unavailable"),
                         vuln.get("remediationNotes", ""),
                     ]
                 )
@@ -807,7 +864,7 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
                         component.get("name", ""),
                         component.get("version", ""),
                         license_info.get("name", ""),
-                        license_info.get("compliance", "Unknown"),
+                        license_info.get("compliance", "unavailable"),
                         license_info.get("type", ""),
                         license_info.get("url", ""),
                         license_info.get("text", ""),
@@ -838,7 +895,7 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
             }
             dependencies = properties.get("cast:dependencies", "")
 
-            if dependencies and dependencies != "Unknown":
+            if dependencies and dependencies != "unavailable":
                 # Parse dependencies if available
                 deps_list = dependencies.split(";")
                 for dep in deps_list:
@@ -888,7 +945,7 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
         )
 
         for component in sbom_data.get("components", []):
-            vulns = component.get("vulnerabilities", [])
+            vulns = component.get("vulnerabilities", []):
             critical_count = sum(1 for v in vulns if v.get("severity") == "CRITICAL")
             high_count = sum(1 for v in vulns if v.get("severity") == "HIGH")
             medium_count = sum(1 for v in vulns if v.get("severity") == "MEDIUM")
@@ -1059,18 +1116,18 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
             if app_info:
                 cyclonedx_bom["metadata"]["component"] = {
                     "type": "application",
-                    "name": app_info.get("name", "Unknown Application"),
-                    "version": app_info.get("version", "Unknown"),
-                    "description": app_info.get("description", "")
+                    "name": app_info.get("name", "unavailable"),
+                    "version": app_info.get("version", "unavailable"),
+                    "description": app_info.get("description", "unavailable")
                 }
             
             # Convert components to CycloneDX format
             for comp_data in sbom_data.get("components", []):
                 cyclonedx_component = {
                     "type": "library",
-                    "name": comp_data.get("name", "Unknown"),
-                    "version": comp_data.get("version", "Unknown"),
-                    "description": comp_data.get("description", "")
+                    "name": comp_data.get("name", "unavailable"),
+                    "version": comp_data.get("version", "unavailable"),
+                    "description": comp_data.get("description", "unavailable")
                 }
                 
                 # Add PURL
@@ -1081,8 +1138,8 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
                 licenses = []
                 for license_info in comp_data.get("licenses", []):
                     license_obj = {
-                        "id": license_info.get("licenseId", "Unknown"),
-                        "name": license_info.get("name", "Unknown")
+                        "id": license_info.get("licenseId", "unavailable"),
+                        "name": license_info.get("name", "unavailable")
                     }
                     if license_info.get("url"):
                         license_obj["url"] = license_info["url"]
@@ -1102,7 +1159,7 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
                     
                     ext_ref = {
                         "type": ref_type,
-                        "url": ref.get("url", "")
+                        "url": ref.get("url", "unavailable")
                     }
                     ext_refs.append(ext_ref)
                 
@@ -1113,8 +1170,8 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
                 properties = []
                 for prop in comp_data.get("properties", []):
                     property_obj = {
-                        "name": prop.get("name", ""),
-                        "value": prop.get("value", "")
+                        "name": prop.get("name", "unavailable"),
+                        "value": prop.get("value", "unavailable")
                     }
                     properties.append(property_obj)
                 
@@ -1125,8 +1182,8 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
                 vulnerabilities = []
                 for vuln_data in comp_data.get("vulnerabilities", []):
                     vuln = {
-                        "id": vuln_data.get("id", "Unknown"),
-                        "description": vuln_data.get("description", "")
+                        "id": vuln_data.get("id", "unavailable"),
+                        "description": vuln.get("description", "unavailable")
                     }
                     
                     # Add CWE if available
@@ -1167,7 +1224,7 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
                     if vuln_data.get("link"):
                         vuln["references"] = [
                             {
-                                "id": vuln_data.get("id", "Unknown"),
+                                "id": vuln_data.get("id", "unavailable"),
                                 "source": {
                                     "name": "CVE",
                                     "url": vuln_data["link"]
@@ -1202,7 +1259,7 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
                 return
                 
         except Exception as e:
-            logger.error(f"Failed to export CycloneDX: {e}")
+            logging.error(f"Failed to export CycloneDX: {e}")
             # Fallback to CLI method if manual method fails
             logger.info("Falling back to CLI method...")
             SBOMExporter.export_cyclonedx_with_cli(filename.replace(f".{format}", ""), format=format)
@@ -1375,13 +1432,13 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
                 "; ".join(
                     [lic.get("name", "") for lic in component.get("licenses", [])]
                 ),
-                properties.get("cast:origin", "Unknown"),
-                properties.get("cast:dependencies", "Unknown"),
+                properties.get("cast:origin", "unavailable"),
+                properties.get("cast:dependencies", "unavailable"),
                 str(len(component.get("vulnerabilities", []))),
-                properties.get("cast:patchStatus", "Unknown"),
+                properties.get("cast:patchStatus", "unavailable"),
                 properties.get("cast:releaseDate", ""),
                 properties.get("cast:eolDate", ""),
-                properties.get("cast:criticality", "Unknown"),
+                properties.get("cast:criticality", "unavailable"),
                 properties.get("cast:usageRestrictions", "None"),
                 properties.get("cast:checksum", ""),
                 properties.get("cast:comments", ""),
@@ -1532,7 +1589,7 @@ def main():
 
     # Get application details for filename
     app_name = (
-        sbom_data.get("metadata", {}).get("application", {}).get("name", "Unknown")
+        sbom_data.get("metadata", {}).get("application", {}).get("name", "unavailable")
     )
     # Clean app name for filename (remove special characters)
     safe_app_name = "".join(
@@ -1572,3 +1629,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
