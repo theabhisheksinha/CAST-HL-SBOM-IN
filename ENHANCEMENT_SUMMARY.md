@@ -7,10 +7,11 @@ This document summarizes the comprehensive enhancements made to the CAST Highlig
 ## Issues Identified
 
 ### Original Problems
-1. **Limited Field Coverage**: Only 7 out of 19 required fields were properly covered (36.8%)
+1. **Limited Field Coverage**: Only 7 out of 25 mandatory SBOM fields were properly covered (28%)
 2. **Incomplete Property Extraction**: The `_get_component_properties()` method only extracted 2 properties (`packageType` and `filePath`)
 3. **Underutilized API**: The code was not leveraging all available data from CAST Highlight API endpoints
 4. **Missing Data Sources**: Only using third-party endpoint, missing components, vulnerabilities, and licenses endpoints
+5. **No Compliance Analysis**: No visibility into which fields were missing or available
 
 ## Enhancements Implemented
 
@@ -38,10 +39,12 @@ def get_comprehensive_sbom_data(self, app_id):
 
 **Major Improvements:**
 - **Multi-Source Data Processing**: Processes data from all API endpoints
-- **Comprehensive Property Extraction**: Extracts 20+ different property types
-- **Enhanced Field Coverage**: Now covers 18 out of 19 required fields (94.7%)
+- **Comprehensive Property Extraction**: Extracts 15+ different property types with clean naming
+- **Enhanced Field Coverage**: CAST Highlight API provides 15 out of 25 mandatory fields (60%)
 - **Data Enrichment**: Combines and enriches data from multiple sources
 - **Component Mapping**: Tracks components across different data sources
+- **Cast Prefix Removal**: Automatic removal of 'cast:' prefix for cleaner output
+- **Compliance Analysis**: Comprehensive reporting of field coverage and missing data
 
 **New Property Types Extracted:**
 ```python
@@ -289,5 +292,39 @@ A new helper function `get_value` was introduced to standardize the handling of 
         *   `export_csv`: For all fields in the CSV output, ensuring consistent "unavailable" values.
         *   `export_xlsx`: For all fields in the XLSX output, including component and vulnerability sheets.
 
-**Purpose:**
-The primary purpose of these changes is to enhance the robustness and consistency of the SBOM generation and export. By explicitly handling `None` or empty string values and replacing them with "unavailable", the SBOM output becomes more predictable and easier to parse, especially for downstream tools or human readers who rely on consistent data representation. This prevents empty strings or `None` values from appearing in the final SBOM, which can sometimes be misinterpreted or cause issues in other systems.
+## 6. Compliance Analysis Tool (`src/compliance_analyzer.py`)
+
+**New Features:**
+- **Field Coverage Analysis**: Comprehensive analysis of SBOM field coverage against mandatory requirements
+- **Missing Field Identification**: Clear identification of which mandatory fields are missing from CAST Highlight API
+- **Compliance Reporting**: Detailed compliance reports with percentages and recommendations
+- **User Notifications**: Clear notifications about field coverage gaps and compliance status
+
+**Key Capabilities:**
+- **60% Coverage Analysis**: Reports that CAST Highlight API provides 15 out of 25 mandatory SBOM fields
+- **Available Fields**: Lists all fields available from the API (component name, version, supplier, etc.)
+- **Missing Fields**: Identifies unavailable fields (author, copyright, description, external references, etc.)
+- **Recommendations**: Provides guidance on manually adding missing field information
+- **Component-Level Analysis**: Analyzes field coverage at the component level
+
+**Usage:**
+```bash
+python src/compliance_analyzer.py Reports/your_sbom_file.json
+```
+
+## Summary of Improvements
+
+### Before Enhancements
+- **28% Field Coverage**: Only 7 out of 25 mandatory fields
+- **Limited Property Extraction**: Only 2 properties extracted
+- **No Compliance Visibility**: No awareness of missing fields
+- **Cast Prefix Issues**: Inconsistent property naming
+
+### After Enhancements
+- **60% Field Coverage**: 15 out of 25 mandatory fields from CAST Highlight API
+- **Comprehensive Property Extraction**: 15+ properties with clean naming
+- **Full Compliance Analysis**: Detailed reporting and recommendations
+- **Clean Output**: Systematic cast prefix removal
+- **User Notifications**: Clear visibility into field coverage gaps
+
+The enhanced system now provides **production-ready SBOM generation** with **comprehensive compliance analysis** and **clear user guidance** for enterprise use.

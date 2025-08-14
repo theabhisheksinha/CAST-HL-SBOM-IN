@@ -1,6 +1,6 @@
 # CAST Highlight SBOM Generator - Enhanced Edition
 
-A comprehensive Python-based application that generates Software Bill of Materials (SBOM) compliant with industry standards by extracting data from CAST Highlight API with **94.7% field coverage** and **clean, standardized property names**.
+A comprehensive Python-based application that generates Software Bill of Materials (SBOM) compliant with industry standards by extracting data from CAST Highlight API with **60% field coverage** and **clean, standardized property names**.
 
 ## 🚀 Overview
 
@@ -8,20 +8,21 @@ This enhanced application connects to the CAST Highlight API to extract comprehe
 
 ## ✨ Key Enhancements
 
-### **Latest Improvements (v2.1.2)**
-- **Standardized Empty/Null Values**: Implemented `get_value` helper to return "unavailable" for empty or null fields, ensuring consistent SBOM output.
+### **Latest Improvements (v2.2.0)**
+- **Cast Prefix Removal**: Automatically removes 'cast:' prefixes from all property names for cleaner output
+- **Compliance Analysis**: Added comprehensive compliance analyzer to identify missing fields
+- **Field Coverage Reporting**: Detailed reporting of available vs. missing SBOM fields
+- **User Notifications**: Clear notifications about field coverage and compliance status
+
+### **Previous Improvements (v2.1.2)**
+- **Standardized Empty/Null Values**: Implemented `get_value` helper to return "unavailable" for empty or null fields
 - **Fixed Application Name**: Corrected application name in SBOM metadata
 - **Accurate Metadata**: Application name now correctly appears in all output formats
 
-### **Previous Improvements (v2.1.1)**
-- **Standardized Property Names**: Removed 'cast:' prefix from all property names
-- **Improved Readability**: Cleaner, more consistent output in all formats
-- **Enhanced Integration**: Better compatibility with third-party tools
-
 ### **Field Coverage Improvements (v2.0)**
-- **Before**: 36.8% field coverage (7/19 fields)
-- **After**: 94.7% field coverage (18/19 fields)
-- **Improvement**: 157% increase in field coverage
+- **Before**: Limited field extraction with cast: prefixes
+- **After**: 60% field coverage (15/25 mandatory fields) with clean property names
+- **Improvement**: Comprehensive field extraction and standardized output
 
 ### **API Integration Enhancements**
 - **Multi-Endpoint Data Collection**: Utilizes all available CAST Highlight API endpoints
@@ -138,36 +139,62 @@ python -m src.verify_compliance --detailed
 python tests/test_enhanced_sbom.py --app-id 12345
 ```
 
-## 📊 Enhanced Field Coverage
+## 📊 Field Coverage Analysis & Mapping
 
-### **Comprehensive Field Analysis**
+### **Exact Field Mapping by Output Format**
 
-| Field | Status | Coverage | Source |
-|-------|--------|----------|---------|
-| **Component Name** | ✅ **Covered** | 100% | CAST API |
-| **Version** | ✅ **Covered** | 100% | CAST API |
-| **Description** | ✅ **Covered** | 100% | CAST API |
-| **License** | ✅ **Covered** | 100% | CAST API |
-| **Origin** | ✅ **Covered** | 100% | Enhanced API |
-| **Vulnerabilities** | ✅ **Covered** | 100% | CAST API |
-| **Unique Identifier** | ✅ **Covered** | 100% | Generated PURL |
-| **Dependencies** | ✅ **Covered** | 100% | Enhanced API |
-| **Patch Status** | ✅ **Covered** | 100% | Enhanced API |
-| **Release Date** | ✅ **Covered** | 100% | Enhanced API |
-| **End of Life Date** | ✅ **Covered** | 100% | Enhanced API |
-| **Criticality** | ✅ **Covered** | 100% | Enhanced API |
-| **Usage Restrictions** | ✅ **Covered** | 100% | Enhanced API |
-| **Checksums** | ✅ **Covered** | 100% | Enhanced API |
-| **Comments** | ✅ **Covered** | 100% | Enhanced API |
-| **Executable Property** | ✅ **Covered** | 100% | Enhanced API |
-| **Archive Property** | ✅ **Covered** | 100% | Enhanced API |
-| **Structured Property** | ✅ **Covered** | 100% | Enhanced API |
-| **Hashes** | ✅ **Covered** | 100% | Enhanced API |
-| **Supplier** | ⚠️ **Unavailable** | 0% | API Limitation |
+| **SBOM Field** | **JSON Field Name** | **CycloneDX Field** | **CSV/XLSX Column** | **CAST API Source** | **Status** |
+|---|---|---|---|---|---|
+| **Component Identification** |
+| Component Name | `name` | `name` | Component Name | `/thirdparty` | ✅ Available |
+| Component Version | `version` | `version` | Component Version | `/thirdparty` | ✅ Available |
+| Component Type | `type` | `type` | Component Type | `/thirdparty` | ✅ Available |
+| Package URL | `purl` | `purl` | Unique Identifier (PURL) | Generated | ✅ Available |
+| Component Description | `description` | `description` | Component Description | `/thirdparty` | ✅ Available |
+| **License Information** |
+| License ID | `licenses[].licenseId` | `licenses[].id` | License Name | `/licenses` | ✅ Available |
+| License Name | `licenses[].name` | `licenses[].name` | License Name | `/licenses` | ✅ Available |
+| License URL | `licenses[].url` | `licenses[].url` | License URL | `/licenses` | ✅ Available |
+| License Compliance | `licenses[].compliance` | `licenses[].compliance` | License Compliance | `/licenses` | ✅ Available |
+| **Security Information** |
+| Vulnerability ID | `vulnerabilities[].id` | `vulnerabilities[].id` | CVE ID | `/vulnerabilities` | ✅ Available |
+| Vulnerability Severity | `vulnerabilities[].severity` | `vulnerabilities[].severity` | Severity | `/vulnerabilities` | ✅ Available |
+| CVSS Score | `vulnerabilities[].cvssScore` | `vulnerabilities[].cvssScore` | CVSS Score | `/vulnerabilities` | ✅ Available |
+| CWE ID | `vulnerabilities[].cweId` | `vulnerabilities[].cweId` | CWE ID | `/vulnerabilities` | ✅ Available |
+| **Metadata & Context** |
+| Timestamp | `metadata.timestamp` | `metadata.timestamp` | Generated Date | System | ✅ Available |
+| Tool Information | `metadata.tool` | `metadata.tools[]` | Tool Name | System | ✅ Available |
+| Application Context | `metadata.application` | `metadata.component` | Application Name | `/applications` | ✅ Available |
+| **Enhanced Properties (Clean Names)** |
+| Component Origin | `properties[].origin` | `properties[].origin` | Component Origin | `/thirdparty` | ✅ Available |
+| Dependencies | `properties[].dependencies` | `properties[].dependencies` | Component Dependencies | `/thirdparty` | ✅ Available |
+| Release Date | `properties[].releaseDate` | `properties[].releaseDate` | Release Date | `/thirdparty` | ✅ Available |
+| End of Life Date | `properties[].eolDate` | `properties[].eolDate` | EOL Date | `/thirdparty` | ✅ Available |
+| Languages | `properties[].languages` | `properties[].languages` | Languages | `/thirdparty` | ✅ Available |
+| Patch Status | `properties[].patchStatus` | `properties[].patchStatus` | Patch Status | `/vulnerabilities` | ✅ Available |
+| **Missing Fields (Manual Addition Required)** |
+| Supplier Name | `supplier.name` | `supplier.name` | Supplier Name | N/A | ❌ Not Available |
+| Supplier Contact | `supplier.contact` | `supplier.contact` | Supplier Contact | N/A | ❌ Not Available |
+| Author | `author` | `author` | Author | N/A | ❌ Not Available |
+| Copyright | `copyright` | `copyright` | Copyright | N/A | ❌ Not Available |
+| Build Tools | `properties[].buildTools` | `properties[].buildTools` | Build Tools | N/A | ❌ Not Available |
+| External References | `externalReferences[]` | `externalReferences[]` | External References | N/A | ❌ Not Available |
+| Digital Signatures | `signatures[]` | `signatures[]` | Signatures | N/A | ❌ Not Available |
+| Component Scope | `scope` | `scope` | Scope | N/A | ❌ Not Available |
+| Distribution Method | `properties[].distribution` | `properties[].distribution` | Distribution | N/A | ❌ Not Available |
+| Usage Context | `properties[].usage` | `properties[].usage` | Usage Context | N/A | ❌ Not Available |
 
-**Total Coverage: 94.7% (18/19 fields)**
+### **Coverage Summary**
+- **Total Coverage: 60.0% (15/25 mandatory fields)**
+- **Available from CAST API**: 15 fields with complete data extraction
+- **Manual Enhancement Required**: 10 fields for full SBOM compliance
+- **Clean Property Names**: All `cast:` prefixes automatically removed
 
-## 🔍 Enhanced API Integration
+### **Key Notes**
+- **Multi-Format Support**: Same field mappings work across JSON, CycloneDX, CSV, XLSX, and DOCX formats
+- **API Coverage**: Direct extraction from CAST Highlight API endpoints
+- **Property Cleaning**: Automatic removal of `cast:` prefixes (e.g., `cast:origin` → `origin`)
+- **Manual Enhancement**: Missing fields require external data sources or manual addition
 
 ### **Multi-Endpoint Data Collection**
 
@@ -197,54 +224,52 @@ The enhanced system utilizes **all available CAST Highlight API endpoints**:
    - License URLs
    - License text
 
-### **Enhanced Property Extraction**
+### **Enhanced Property Extraction with Clean Output**
 
-The system now extracts **20+ different property types**:
+The system extracts **15+ different property types** with **automatic cast: prefix removal**:
 
 ```python
 # Origin and source information
-- cast:origin          # Component origin
-- cast:source          # Source location
+- origin               # Component origin (cast:origin → origin)
+- source               # Source location
 
 # Dependencies and relationships
-- cast:dependencies    # Component dependencies
+- dependencies         # Component dependencies (cast:dependencies → dependencies)
 
 # Release and lifecycle information
-- cast:releaseDate     # Release date
-- cast:eolDate         # End of life date
-- cast:lastVersion     # Latest version
+- releaseDate          # Release date (cast:releaseDate → releaseDate)
+- lastVersion          # Latest version (cast:lastVersion → lastVersion)
 
 # Security and criticality information
-- cast:criticality     # Security criticality
-- cast:riskLevel       # Risk assessment
+- criticality          # Security criticality
+- riskLevel            # Risk assessment
 
 # Usage and compliance information
-- cast:usageRestrictions # Usage restrictions
-- cast:compliance      # Compliance status
+- usageRestrictions    # Usage restrictions
+- compliance           # Compliance status
 
 # Checksums and integrity information
-- cast:checksum        # Integrity checksums
-- cast:hash            # Hash values
+- checksum             # Integrity checksums
+- hash                 # Hash values
 
 # Comments and notes
-- cast:comments        # Component comments
-- cast:notes           # Additional notes
+- comments             # Component comments
+- notes                # Additional notes
 
 # Component properties
-- cast:executable      # Executable property
-- cast:archive         # Archive property
-- cast:structured      # Structured property
-
-# Patch status
-- cast:patchStatus     # Patch status
+- executable           # Executable property
+- archive              # Archive property
+- structured           # Structured property
 
 # Languages and technologies
-- cast:languages       # Programming languages
+- languages            # Programming languages (cast:languages → languages)
 ```
+
+**Note**: All `cast:` prefixes are automatically removed during export for cleaner, more standardized output.
 
 ## 📈 Quality Assessment
 
-### **Enhanced Quality Scoring (7 Criteria)**
+### **Enhanced Quality Scoring (8 Criteria)**
 
 1. **Vulnerability Data Presence** ✅
    - Security vulnerability tracking
@@ -271,20 +296,25 @@ The system now extracts **20+ different property types**:
    - All available components included
    - Complete component lifecycle
 
-6. **Enhanced Field Coverage** ✅ (NEW)
-   - 94.7% field coverage achieved
-   - Maximum data extraction
-   - Comprehensive property coverage
+6. **Field Coverage Analysis** ✅ (NEW)
+   - 60% field coverage from CAST Highlight API
+   - Comprehensive compliance reporting
+   - Clear identification of missing fields
 
-7. **Additional Metadata Fields** ✅ (NEW)
-   - Rich metadata beyond baseline
-   - Enhanced property extraction
-   - Additional context information
+7. **Cast Prefix Removal** ✅ (NEW)
+   - Automatic removal of 'cast:' prefixes
+   - Clean, standardized property names
+   - Better third-party tool compatibility
+
+8. **Compliance Analysis Tool** ✅ (NEW)
+   - Automated compliance assessment
+   - Field coverage statistics
+   - User notifications and recommendations
 
 ### **Quality Score Ranges**
-- **EXCELLENT**: 6-7/7 criteria (85-100%)
-- **GOOD**: 4-5/7 criteria (57-71%)
-- **NEEDS IMPROVEMENT**: 0-3/7 criteria (0-43%)
+- **EXCELLENT**: 7-8/8 criteria (87-100%)
+- **GOOD**: 5-6/8 criteria (62-75%)
+- **NEEDS IMPROVEMENT**: 0-4/8 criteria (0-50%)
 
 ## 📤 Output Formats
 
@@ -857,10 +887,11 @@ This project is provided as-is for SBOM generation purposes. Please ensure compl
 
 The **Enhanced CAST Highlight SBOM Generator** represents a **significant improvement** in SBOM generation capabilities:
 
-- **94.7% field coverage** (up from 36.8%)
-- **Comprehensive API integration** utilizing all available endpoints
-- **Enhanced data quality** with detailed property extraction
-- **Improved compliance** with industry standards
+- **60% field coverage** from CAST Highlight API with clear identification of missing fields
+- **Cast prefix removal** for clean, standardized property names
+- **Comprehensive compliance analysis** with detailed reporting and recommendations
+- **Multi-format export** supporting JSON, CSV, XLSX, CycloneDX, and DOCX
+- **User notifications** about field coverage gaps and compliance status
 - **Better audit capabilities** with detailed logging and verification
 
-This enhanced system provides **production-ready SBOM generation** with **maximum field coverage** and **comprehensive compliance features** for enterprise use."# CAST-HL-SBOM-IN"
+This enhanced system provides **production-ready SBOM generation** with **comprehensive field coverage analysis** and **compliance reporting features** for enterprise use.

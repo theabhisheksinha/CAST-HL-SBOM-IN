@@ -504,9 +504,27 @@ class SBOMExporter:
     """Export SBOM data in various formats"""
 
     @staticmethod
+    def _process_sbom_properties(sbom_data: Dict) -> Dict:
+        """Process SBOM data to remove cast: prefixes from property names"""
+        import copy
+        processed_data = copy.deepcopy(sbom_data)
+        
+        for component in processed_data.get("components", []):
+            # Process properties to remove cast: prefix
+            if "properties" in component:
+                for prop in component["properties"]:
+                    if "name" in prop and prop["name"].startswith("cast:"):
+                        prop["name"] = prop["name"][5:]  # Remove "cast:" prefix
+        
+        return processed_data
+
+    @staticmethod
     def export_json(sbom_data: Dict, filename: str):
+        # Process SBOM data to remove cast: prefixes
+        processed_data = SBOMExporter._process_sbom_properties(sbom_data)
+        
         # Ensure all fields present in Excel export are included in JSON
-        for component in sbom_data["components"]:
+        for component in processed_data["components"]:
             properties = {
                 prop.get("name", ""): prop.get("value", "")
                 for prop in component.get("properties", [])
@@ -516,37 +534,40 @@ class SBOMExporter:
             component["component_license"] = "; ".join(
                 [lic.get("name", "") for lic in component.get("licenses", [])]
             )
-            component["component_origin"] = properties.get("cast:origin", "unavailable")
+            component["component_origin"] = properties.get("origin", "unavailable")
             component["component_dependencies"] = properties.get(
-                "cast:dependencies", "unavailable"
+                "dependencies", "unavailable"
             )
             component["vulnerabilities_count"] = str(
                 len(component.get("vulnerabilities", []))
             )
-            component["patch_status"] = properties.get("cast:patchStatus", "unavailable")
-            component["release_date"] = properties.get("cast:releaseDate", "")
-            component["eol_date"] = properties.get("cast:eolDate", "")
-            component["criticality"] = properties.get("cast:criticality", "unavailable")
+            component["patch_status"] = properties.get("patchStatus", "unavailable")
+            component["release_date"] = properties.get("releaseDate", "")
+            component["eol_date"] = properties.get("eolDate", "")
+            component["criticality"] = properties.get("criticality", "unavailable")
             component["usage_restrictions"] = properties.get(
-                "cast:usageRestrictions", "None"
+                "usageRestrictions", "None"
             )
-            component["checksums"] = properties.get("cast:checksum", "")
-            component["comments"] = properties.get("cast:comments", "")
+            component["checksums"] = properties.get("checksum", "")
+            component["comments"] = properties.get("comments", "")
             component["author_of_sbom_data"] = component.get("author", "")
-            component["timestamp"] = sbom_data.get("metadata", {}).get("timestamp", "")
-            component["executable_property"] = properties.get("cast:executable", "No")
-            component["archive_property"] = properties.get("cast:archive", "No")
-            component["structured_property"] = properties.get("cast:structured", "No")
+            component["timestamp"] = processed_data.get("metadata", {}).get("timestamp", "")
+            component["executable_property"] = properties.get("executable", "No")
+            component["archive_property"] = properties.get("archive", "No")
+            component["structured_property"] = properties.get("structured", "No")
             component["external_references"] = "; ".join(
                 [ref.get("url", "") for ref in component.get("externalReferences", [])]
             )
         with open(filename, "w", encoding="utf-8") as f:
-            json.dump(sbom_data, f, indent=2)
+            json.dump(processed_data, f, indent=2)
         logger.info(f"SBOM exported to {filename}")
 
     @staticmethod
     def export_csv(sbom_data: Dict, filename: str):
         """Export SBOM as CSV with all baseline fields (parity with Excel export)"""
+        # Process SBOM data to remove cast: prefixes
+        processed_data = SBOMExporter._process_sbom_properties(sbom_data)
+        
         with open(filename, "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
             # Write header (same as Components Complete in Excel)
@@ -578,7 +599,7 @@ class SBOMExporter:
                     "External References",
                 ]
             )
-            for component in sbom_data["components"]:
+            for component in processed_data["components"]:
                 properties = {
                     prop.get("name", ""): prop.get("value", "")
                     for prop in component.get("properties", [])
@@ -595,21 +616,21 @@ class SBOMExporter:
                                 for lic in component.get("licenses", [])
                             ]
                         ),
-                        properties.get("cast:origin", "unavailable"),
-                        properties.get("cast:dependencies", "unavailable"),
+                        properties.get("origin", "unavailable"),
+                        properties.get("dependencies", "unavailable"),
                         str(len(component.get("vulnerabilities", []))),
-                        properties.get("cast:patchStatus", "unavailable"),
-                        properties.get("cast:releaseDate", ""),
-                        properties.get("cast:eolDate", ""),
-                        properties.get("cast:criticality", "unavailable"),
-                        properties.get("cast:usageRestrictions", "None"),
-                        properties.get("cast:checksum", ""),
-                        properties.get("cast:comments", ""),
+                        properties.get("patchStatus", "unavailable"),
+                        properties.get("releaseDate", ""),
+                        properties.get("eolDate", ""),
+                        properties.get("criticality", "unavailable"),
+                        properties.get("usageRestrictions", "None"),
+                        properties.get("checksum", ""),
+                        properties.get("comments", ""),
                         component.get("author", ""),
-                        sbom_data.get("metadata", {}).get("timestamp", ""),
-                        properties.get("cast:executable", "No"),
-                        properties.get("cast:archive", "No"),
-                        properties.get("cast:structured", "No"),
+                        processed_data.get("metadata", {}).get("timestamp", ""),
+                        properties.get("executable", "No"),
+                        properties.get("archive", "No"),
+                        properties.get("structured", "No"),
                         component.get("purl", ""),
                         component.get("type", ""),
                         component.get("copyright", ""),
@@ -678,6 +699,9 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
             logger.error("openpyxl is not installed. Cannot export to .xlsx.")
             return
 
+        # Process SBOM data to remove cast: prefixes
+        processed_data = SBOMExporter._process_sbom_properties(sbom_data)
+
         wb = openpyxl.Workbook()
 
         # Remove default sheet and create our own
@@ -688,32 +712,32 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
         ws_summary = wb.create_sheet(title="SBOM Summary")
         ws_summary.append(["SBOM Information", "Value"])
         ws_summary.append(
-            ["SBOM Version", sbom_data.get("sbomVersion", "1.0")]
+            ["SBOM Version", processed_data.get("sbomVersion", "1.0")]
         )
         ws_summary.append(
-            ["Generated Timestamp", sbom_data.get("metadata", {}).get("timestamp", "")]
+            ["Generated Timestamp", processed_data.get("metadata", {}).get("timestamp", "")]
         )
-        ws_summary.append(["Tool", sbom_data.get("metadata", {}).get("tool", "")])
+        ws_summary.append(["Tool", processed_data.get("metadata", {}).get("tool", "")])
         ws_summary.append(
-            ["Tool Version", sbom_data.get("metadata", {}).get("version", "")]
+            ["Tool Version", processed_data.get("metadata", {}).get("version", "")]
         )
         ws_summary.append(
             [
                 "Application Name",
-                sbom_data.get("metadata", {}).get("application", {}).get("name", ""),
+                processed_data.get("metadata", {}).get("application", {}).get("name", ""),
             ]
         )
         ws_summary.append(
             [
                 "Application Version",
-                sbom_data.get("metadata", {}).get("application", {}).get("version", ""),
+                processed_data.get("metadata", {}).get("application", {}).get("version", ""),
             ]
         )
-        ws_summary.append(["Total Components", len(sbom_data.get("components", []))])
+        ws_summary.append(["Total Components", len(processed_data.get("components", []))])
 
         # Count vulnerabilities by severity
         vuln_counts = {"CRITICAL": 0, "HIGH": 0, "MEDIUM": 0, "LOW": 0}
-        for component in sbom_data.get("components", []):
+        for component in processed_data.get("components", []):
             for vuln in component.get("vulnerabilities", []):
                 severity = vuln.get("severity", "UNKNOWN")
                 if severity in vuln_counts:
@@ -755,7 +779,7 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
             ]
         )
 
-        for component in sbom_data.get("components", []):
+        for component in processed_data.get("components", []):
             # Extract properties for additional fields
             properties = {
                 prop.get("name", ""): prop.get("value", "")
@@ -771,25 +795,25 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
                     "; ".join(
                         [lic.get("name", "") for lic in component.get("licenses", [])]
                     ),
-                    properties.get("cast:origin", "unavailable"),  # Component Origin
+                    properties.get("origin", "unavailable"),  # Component Origin
                     properties.get(
-                        "cast:dependencies", "unavailable"
+                        "dependencies", "unavailable"
                     ),  # Component Dependencies
                     str(len(component.get("vulnerabilities", []))),
-                    properties.get("cast:patchStatus", "unavailable"),  # Patch Status
-                    properties.get("cast:releaseDate", ""),  # Release Date
-                    properties.get("cast:eolDate", ""),  # EOL Date
-                    properties.get("cast:criticality", "unavailable"),  # Criticality
+                    properties.get("patchStatus", "unavailable"),  # Patch Status
+                    properties.get("releaseDate", ""),  # Release Date
+                    properties.get("eolDate", ""),  # EOL Date
+                    properties.get("criticality", "unavailable"),  # Criticality
                     properties.get(
-                        "cast:usageRestrictions", "None"
+                        "usageRestrictions", "None"
                     ),  # Usage Restrictions
-                    properties.get("cast:checksum", ""),  # Checksums
-                    properties.get("cast:comments", ""),  # Comments
+                    properties.get("checksum", ""),  # Checksums
+                    properties.get("comments", ""),  # Comments
                     component.get("author", ""),
-                    sbom_data.get("metadata", {}).get("timestamp", ""),
-                    properties.get("cast:executable", "No"),  # Executable Property
-                    properties.get("cast:archive", "No"),  # Archive Property
-                    properties.get("cast:structured", "No"),  # Structured Property
+                    processed_data.get("metadata", {}).get("timestamp", ""),
+                    properties.get("executable", "No"),  # Executable Property
+                    properties.get("archive", "No"),  # Archive Property
+                    properties.get("structured", "No"),  # Structured Property
                     component.get("purl", ""),
                     component.get("type", ""),
                     component.get("copyright", ""),
@@ -822,7 +846,7 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
             ]
         )
 
-        for component in sbom_data.get("components", []):
+        for component in processed_data.get("components", []):
             for vuln in component.get("vulnerabilities", []):
                 ws_vuln.append(
                     [
@@ -857,7 +881,7 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
             ]
         )
 
-        for component in sbom_data.get("components", []):
+        for component in processed_data.get("components", []):
             for license_info in component.get("licenses", []):
                 ws_licenses.append(
                     [
@@ -887,13 +911,13 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
             ]
         )
 
-        for component in sbom_data.get("components", []):
+        for component in processed_data.get("components", []):
             # Extract dependency information from properties
             properties = {
                 prop.get("name", ""): prop.get("value", "")
                 for prop in component.get("properties", [])
             }
-            dependencies = properties.get("cast:dependencies", "")
+            dependencies = properties.get("dependencies", "")
 
             if dependencies and dependencies != "unavailable":
                 # Parse dependencies if available
@@ -1093,18 +1117,21 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
     def export_cyclonedx(sbom_data: Dict, filename: str, format: str = "json"):
         """Export SBOM data in CycloneDX format (manual implementation)"""
         try:
+            # Process SBOM data to remove cast: prefixes
+            processed_data = SBOMExporter._process_sbom_properties(sbom_data)
+            
             # Create CycloneDX structure manually
             cyclonedx_bom = {
                 "bomFormat": "CycloneDX",
                 "specVersion": "1.4",
                 "version": 1,
                 "metadata": {
-                    "timestamp": sbom_data.get("metadata", {}).get("timestamp", datetime.utcnow().isoformat()),
+                    "timestamp": processed_data.get("metadata", {}).get("timestamp", datetime.utcnow().isoformat()),
                     "tools": [
                         {
                             "vendor": "CAST Highlight SBOM Generator",
                             "name": "SBOM Generator",
-                            "version": sbom_data.get("metadata", {}).get("version", "1.0")
+                            "version": processed_data.get("metadata", {}).get("version", "1.0")
                         }
                     ]
                 },
@@ -1112,7 +1139,7 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
             }
             
             # Add application as metadata component
-            app_info = sbom_data.get("metadata", {}).get("application", {})
+            app_info = processed_data.get("metadata", {}).get("application", {})
             if app_info:
                 cyclonedx_bom["metadata"]["component"] = {
                     "type": "application",
@@ -1122,7 +1149,7 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
                 }
             
             # Convert components to CycloneDX format
-            for comp_data in sbom_data.get("components", []):
+            for comp_data in processed_data.get("components", []):
                 cyclonedx_component = {
                     "type": "library",
                     "name": comp_data.get("name", "unavailable"),
@@ -1383,6 +1410,10 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
         if not Document:
             logger.error("python-docx is not installed. Cannot export to .docx.")
             return
+        
+        # Process SBOM data to remove cast: prefixes
+        processed_data = SBOMExporter._process_sbom_properties(sbom_data)
+        
         doc = Document()
         doc.add_heading("Software Bill of Materials (SBOM)", 0)
         doc.add_paragraph(f"Generated: {datetime.utcnow().isoformat()}")
@@ -1418,7 +1449,7 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
         hdr_cells = table.rows[0].cells
         for i, h in enumerate(headers):
             hdr_cells[i].text = h
-        for component in sbom_data["components"]:
+        for component in processed_data["components"]:
             properties = {
                 prop.get("name", ""): prop.get("value", "")
                 for prop in component.get("properties", [])
@@ -1432,21 +1463,21 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
                 "; ".join(
                     [lic.get("name", "") for lic in component.get("licenses", [])]
                 ),
-                properties.get("cast:origin", "unavailable"),
-                properties.get("cast:dependencies", "unavailable"),
+                properties.get("origin", "unavailable"),
+                properties.get("dependencies", "unavailable"),
                 str(len(component.get("vulnerabilities", []))),
-                properties.get("cast:patchStatus", "unavailable"),
-                properties.get("cast:releaseDate", ""),
-                properties.get("cast:eolDate", ""),
-                properties.get("cast:criticality", "unavailable"),
-                properties.get("cast:usageRestrictions", "None"),
-                properties.get("cast:checksum", ""),
-                properties.get("cast:comments", ""),
+                properties.get("patchStatus", "unavailable"),
+                properties.get("releaseDate", ""),
+                properties.get("eolDate", ""),
+                properties.get("criticality", "unavailable"),
+                properties.get("usageRestrictions", "None"),
+                properties.get("checksum", ""),
+                properties.get("comments", ""),
                 component.get("author", ""),
-                sbom_data.get("metadata", {}).get("timestamp", ""),
-                properties.get("cast:executable", "No"),
-                properties.get("cast:archive", "No"),
-                properties.get("cast:structured", "No"),
+                processed_data.get("metadata", {}).get("timestamp", ""),
+                properties.get("executable", "No"),
+                properties.get("archive", "No"),
+                properties.get("structured", "No"),
                 component.get("purl", ""),
                 component.get("type", ""),
                 component.get("copyright", ""),

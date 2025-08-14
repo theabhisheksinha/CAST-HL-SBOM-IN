@@ -1,5 +1,28 @@
 # Changelog - CAST Highlight SBOM Generator
 
+## [2.1.3] - 2025-08-14 - Compliance Analysis & Field Coverage Enhancement
+
+### 🔍 Major New Features
+- **Compliance Analysis Tool**: Added `compliance_analyzer.py` for comprehensive SBOM field coverage analysis
+- **Field Coverage Reporting**: Detailed reporting of available vs. missing mandatory SBOM fields
+- **User Notifications**: Clear notifications about field coverage gaps and compliance status
+- **Cast Prefix Removal**: Systematic removal of 'cast:' prefix from all property names for cleaner output
+
+### 📊 Field Coverage Analysis
+- **60% Coverage**: CAST Highlight API provides 15 out of 25 mandatory SBOM fields
+- **Available Fields**: Component name, version, supplier, type, scope, hashes, licenses, and more
+- **Missing Fields**: Author, copyright, description, external references, and others
+- **Recommendations**: Clear guidance on manually adding missing field information
+
+### 🛠️ Files Added
+- `src/compliance_analyzer.py` - Comprehensive SBOM compliance analysis tool
+- `src/verify_compliance.py` - Field coverage verification utilities
+
+### 🛠️ Files Modified
+- `README.md` - Updated with accurate field coverage information and compliance analysis details
+- `src/sbom_exporter.py` - Enhanced cast prefix removal across all export formats
+- `src/sbom_builder.py` - Improved field extraction and property name standardization
+
 ## [2.1.2] - 2025-08-11 - Application Name Fix
 
 ### 🐛 Bug Fixes
