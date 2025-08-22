@@ -23,6 +23,7 @@ CAST-HL-SBOM-IN/
 │   ├── 📄 __init__.py
 │   ├── 📄 main.py                        # ✅ ESSENTIAL - Main application
 │   ├── 📄 config_loader.py               # ✅ ESSENTIAL - Configuration loader
+│   ├── 📄 logging_config.py              # ✅ ESSENTIAL - Centralized logging configuration
 │   ├── 📄 highlight_api.py               # ✅ ESSENTIAL - API client
 │   ├── 📄 sbom_builder.py                # ✅ ESSENTIAL - SBOM builder
 │   ├── 📄 sbom_exporter.py               # ✅ ESSENTIAL - Export functionality
@@ -49,7 +50,7 @@ CAST-HL-SBOM-IN/
 ❌ config/config.json                     # Contains actual credentials
 ❌ config.json                           # Root config with credentials
 ❌ *.log                                 # Log files
-❌ logs/                                 # Log directory
+❌ logs/                                 # Generated log directory with timestamped files
 ❌ Reports/                              # Generated reports
 ❌ *.xlsx, *.csv, *.json, *.xml, *.docx  # Generated output files
 ❌ .env                                  # Environment variables

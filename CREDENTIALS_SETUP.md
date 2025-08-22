@@ -41,7 +41,7 @@ You will need:
 - **company_id**: Numeric or alphanumeric company/domain ID
 - **api_key**: Only needed if using API key authentication
 - **application_id**: The ID of the application to generate the SBOM for (get this from the CAST Highlight UI or API)
-- **output_formats**: List of formats to generate (choose any of: `json`, `xlsx`, `cyclonedx`, `docx`, `csv`)
+- **output_formats**: List of formats to generate (choose any of: `json`, `xlsx`, `cyclonedx`, `docx`, `csv`, `standard`)
 - **default_output_prefix**: Prefix for generated SBOM files
 
 ## 3. How to Find Your Application ID
@@ -61,4 +61,4 @@ You will need:
 - **Output format errors**: Only use supported formats in the `output_formats` list
 
 ## 6. More Information
-- See the [README.md](README.md) for full usage, packaging, and advanced configuration details. 
+- See the [README.md](README.md) for full usage, packaging, and advanced configuration details.

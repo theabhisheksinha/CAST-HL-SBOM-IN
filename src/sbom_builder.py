@@ -7,8 +7,10 @@ Extracts comprehensive component data from multiple API endpoints
 import logging
 from typing import Dict, List, Optional, Any
 from datetime import datetime
+from logging_config import setup_module_logging
 
-logger = logging.getLogger(__name__)
+# Set up separated logging for sbom_builder module
+logger, log_files = setup_module_logging('sbom_builder')
 
 class SBOMBuilder:
     """

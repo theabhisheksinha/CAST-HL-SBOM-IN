@@ -1,9 +1,11 @@
+import logging
 import requests
 from requests.auth import HTTPBasicAuth
-import logging
 from typing import Dict, List, Optional
+from logging_config import setup_module_logging
 
-logger = logging.getLogger(__name__)
+# Set up separated logging for highlight_api module
+logger, log_files = setup_module_logging('highlight_api')
 
 class HighlightAPI:
     def __init__(self, base_url, company_id, auth_method, username=None, password=None, api_key=None):
@@ -145,4 +147,4 @@ class HighlightAPI:
         }
         
         logger.info(f"Comprehensive data collection completed for application {app_id}")
-        return combined_data 
+        return combined_data

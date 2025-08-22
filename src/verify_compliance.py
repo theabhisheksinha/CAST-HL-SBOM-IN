@@ -7,33 +7,19 @@ Updated to work with the new comprehensive SBOM structure
 import openpyxl
 import json
 from datetime import datetime
-from .sbom_exporter import SBOMExporter
-from .sbom_builder import SBOMBuilder
-from .highlight_api import HighlightAPI
-from .config_loader import load_config
-from .compliance_analyzer import SBOMComplianceAnalyzer
+from sbom_exporter import SBOMExporter
+from sbom_builder import SBOMBuilder
+from highlight_api import HighlightAPI
+from config_loader import load_config
+from compliance_analyzer import SBOMComplianceAnalyzer
 import os
 import logging
 
-# Create logs directory if it doesn't exist
-logs_dir = 'logs'
-if not os.path.exists(logs_dir):
-    os.makedirs(logs_dir)
+# Import logging configuration
+from logging_config import setup_module_logging
 
-# Create log file with date and time
-log_timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-log_file = os.path.join(logs_dir, f'verify_compliance_{log_timestamp}.log')
-
-import logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(log_file),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
+# Set up separated logging for verify_compliance module
+logger, log_files = setup_module_logging('verify_compliance')
 
 CONFIG_PATH = 'config/config.json'
 
@@ -376,4 +362,4 @@ if __name__ == "__main__":
     verify_json_sbom_compliance()
     
     print()
-    print("✅ Enhanced SBOM Compliance Verification Complete") 
+    print("✅ Enhanced SBOM Compliance Verification Complete")

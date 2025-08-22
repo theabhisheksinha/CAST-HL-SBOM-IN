@@ -27,21 +27,11 @@ try:
 except ImportError:
     Document = None
 
-# Create logs directory if it doesn't exist
-logs_dir = "logs"
-if not os.path.exists(logs_dir):
-    os.makedirs(logs_dir)
+# Import logging configuration
+from logging_config import setup_module_logging
 
-# Create log file with date and time
-log_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-log_file = os.path.join(logs_dir, f"sbom_{log_timestamp}.log")
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler(log_file), logging.StreamHandler()],
-)
-logger = logging.getLogger(__name__)
+# Set up separated logging for sbom_generator module
+logger, log_files = setup_module_logging('sbom_generator')
 
 # CycloneDX support (JSON/XML)
 try:
@@ -969,7 +959,7 @@ PackageDescription: {component.get('description', 'NOASSERTION')}
         )
 
         for component in sbom_data.get("components", []):
-            vulns = component.get("vulnerabilities", []):
+            vulns = component.get("vulnerabilities", [])
             critical_count = sum(1 for v in vulns if v.get("severity") == "CRITICAL")
             high_count = sum(1 for v in vulns if v.get("severity") == "HIGH")
             medium_count = sum(1 for v in vulns if v.get("severity") == "MEDIUM")

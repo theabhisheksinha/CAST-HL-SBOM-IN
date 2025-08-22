@@ -94,6 +94,10 @@ venv.bak/
 # mkdocs documentation
 /site
 
+#Extra unwanted files
+/SKS_Script/*.*
+
+
 # mypy
 .mypy_cache/
 .dmypy.json

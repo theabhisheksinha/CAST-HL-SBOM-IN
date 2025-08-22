@@ -630,3 +630,83 @@ class SBOMExporter:
         
         wb.save(filename)
         logging.info(f"SBOM exported to {filename}")
+
+    @staticmethod
+    def export_standard_format(sbom_data: Dict, excel_filename: str, csv_filename: str):
+        """Export SBOM data in standard 21-column format for compliance reporting"""
+        try:
+            import pandas as pd
+        except ImportError:
+            logging.error("pandas is required for standard format export. Install with: pip install pandas")
+            raise ImportError("pandas is required for standard format export")
+        
+        logging.info(f"Exporting SBOM in standard format to {excel_filename} and {csv_filename}")
+        
+        # Define the 21 standard columns in exact order
+        standard_columns = [
+            "Component Name", "Component Version", "Component Description", "Component Supplier",
+            "Component License", "Component Origin", "Component Dependencies", "Vulnerabilities",
+            "Patch Status", "Release Date", "End-of-Life (EOL) Date", "Criticality", "Usage Restrictions",
+            "Checksums or Hashes", "Comments or Notes", "Author of SBOM Data", "Timestamp",
+            "Executable Property", "Archive Property", "Structured Property", "Unique Identifier"
+        ]
+        
+        # Transform SBOM data to standard format
+        standard_data = []
+        metadata = sbom_data.get("metadata", {})
+        timestamp = get_value(metadata.get("timestamp"), datetime.utcnow().isoformat())
+        author = "CAST Highlight"
+        
+        for component in sbom_data.get("components", []):
+            # Extract basic component info
+            comp_name = get_value(component.get("name"))
+            comp_version = get_value(component.get("version"))
+            comp_description = get_value(component.get("description"))
+            
+            # Extract properties for mapping
+            properties = {get_value(prop.get("name")): get_value(prop.get("value")) 
+                         for prop in component.get("properties", [])}
+            
+            # Map API fields to standard columns
+            standard_row = {
+                "Component Name": comp_name,
+                "Component Version": comp_version,
+                "Component Description": comp_description,
+                "Component Supplier": "Manual Input Required",  # Not available in CAST API
+                "Component License": "; ".join([get_value(lic.get("name")) for lic in component.get("licenses", [])]),
+                "Component Origin": properties.get("origin", get_value(properties.get("cast:origin"), "unavailable")),
+                "Component Dependencies": properties.get("dependencies", get_value(properties.get("cast:dependencies"), "unavailable")),
+                "Vulnerabilities": "; ".join([get_value(vuln.get("id")) for vuln in component.get("vulnerabilities", [])]),
+                "Patch Status": properties.get("safest_version", get_value(properties.get("cast:safest_version"), "unavailable")),
+                "Release Date": properties.get("releaseDate", get_value(properties.get("cast:releaseDate"), "unavailable")),
+                "End-of-Life (EOL) Date": properties.get("lifespan", get_value(properties.get("cast:lifespan"), "unavailable")),
+                "Criticality": "Manual Input Required",  # Not available in CAST API
+                "Usage Restrictions": "Manual Input Required",  # Not available in CAST API
+                "Checksums or Hashes": "; ".join([f"{get_value(h.get('alg'))}:{get_value(h.get('content'))}" for h in component.get("hashes", [])]),
+                "Comments or Notes": "Manual Input Required",  # Not available in CAST API
+                "Author of SBOM Data": author,
+                "Timestamp": timestamp,
+                "Executable Property": "Manual Input Required",  # Limited type info in CAST API
+                "Archive Property": "Manual Input Required",  # Not available in CAST API
+                "Structured Property": "Manual Input Required",  # Not available in CAST API
+                "Unique Identifier": get_value(component.get("purl"))
+            }
+            
+            standard_data.append(standard_row)
+        
+        # Create DataFrame with exact column order
+        df = pd.DataFrame(standard_data)
+        df = df.reindex(columns=standard_columns)
+        
+        # Export to Excel and CSV
+        df.to_excel(excel_filename, index=False)
+        df.to_csv(csv_filename, index=False)
+        
+        logging.info(f"Standard format exported successfully:")
+        logging.info(f"  - Excel: {excel_filename}")
+        logging.info(f"  - CSV: {csv_filename}")
+        logging.info(f"  - Components: {len(standard_data)}")
+        logging.info(f"  - Fields populated: 14/21 (67% coverage)")
+        logging.info(f"  - Manual input required for: Component Supplier, Criticality, Usage Restrictions, Comments, Executable/Archive/Structured Properties")
+        
+        return df

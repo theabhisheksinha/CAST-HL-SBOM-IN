@@ -1,5 +1,77 @@
 # Changelog - CAST Highlight SBOM Generator
 
+## [2.1.5] - 2025-08-22 - Configurable Logging Levels & Production Cleanup
+
+### 🎛️ New Features
+- **Command-Line Logging Controls**: Added support for configurable logging levels via command-line arguments
+- **Logging Level Options**: `--log-level`, `--debug`, `--quiet` flags for granular control
+- **Smart Log File Creation**: Log files only created when needed (QUIET mode creates no log files)
+- **Production-Ready Cleanup**: Removed all test scripts and debug files from final release
+
+### 🔧 Logging Level Controls
+- **`--debug`**: Enable debug logging (shows all log messages including DEBUG level)
+- **`--log-level [LEVEL]`**: Set specific logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+- **`--quiet`**: Quiet mode - only show ERROR messages, no log files created
+- **Default**: INFO level logging with standard log file creation
+
+### 🧹 Production Cleanup
+- **Removed Test Scripts**: Deleted entire `tests/` directory and all test files
+- **Cleaned Test Logs**: Removed test-related log files from `logs/` directory
+- **Debug File Removal**: Eliminated debug scripts and temporary test files
+
+### 🛠️ Files Added
+- Enhanced `src/main.py` with argparse for command-line argument handling
+- Updated `src/logging_config.py` with configurable logging levels
+
+### 🛠️ Files Modified
+- `src/main.py` - Added argument parsing and global logging setup
+- `src/logging_config.py` - Enhanced with log level configuration support
+- `src/sbom_generator.py` - Fixed syntax error in vulnerability processing
+- `src/verify_compliance.py` - Fixed relative import issues
+
+### 🗑️ Files Removed
+- `tests/` directory and all test scripts
+- `debug_prefix_removal.py`
+- `test_export.py`
+- `test_enhanced_sbom_output.json`
+- Various test log files
+
+### 🔍 Technical Benefits
+- **Controlled Logging**: Users can now control log verbosity based on their needs
+- **Production Ready**: Clean codebase without test artifacts
+- **Efficient Logging**: QUIET mode prevents unnecessary log file creation
+- **Better UX**: Clear command-line interface with help documentation
+
+## [2.1.4] - 2025-08-22 - Enhanced Logging System
+
+### 🔧 Major Enhancements
+- **Separated Logging System**: Implemented centralized logging configuration with separate log and error files
+- **Timestamped Log Files**: Each execution generates distinct timestamped files for better tracking
+- **Organized Log Structure**: Created `logs/log/` and `logs/error/` subdirectories for better organization
+- **Module-Specific Logging**: Each module generates its own separate log and error files
+- **Centralized Configuration**: Added `logging_config.py` for consistent logging across all modules
+
+### 📁 Logging Structure
+- **Log Files**: `logs/log/[module_name]_[timestamp].log` - Contains INFO, WARNING, and ERROR messages
+- **Error Files**: `logs/error/[module_name]_[timestamp].error` - Contains only ERROR messages
+- **Console Output**: Real-time monitoring with all log levels displayed
+
+### 🛠️ Files Added
+- `src/logging_config.py` - Centralized logging configuration with SeparatedLoggingConfig class
+
+### 🛠️ Files Modified
+- `src/main.py` - Updated to use centralized logging configuration
+- `src/sbom_generator.py` - Migrated to new logging system
+- `src/verify_compliance.py` - Updated logging implementation
+- `src/highlight_api.py` - Integrated with centralized logging
+- `src/sbom_builder.py` - Updated to use new logging structure
+
+### 🔍 Technical Benefits
+- **Better Error Tracking**: Separate error files make debugging easier
+- **Execution History**: Timestamped files provide clear execution history
+- **Reduced Log Clutter**: Organized structure prevents log file accumulation
+- **Consistent Formatting**: Unified log format across all modules
+
 ## [2.1.3] - 2025-08-14 - Compliance Analysis & Field Coverage Enhancement
 
 ### 🔍 Major New Features

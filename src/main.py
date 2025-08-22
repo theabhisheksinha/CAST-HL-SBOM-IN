@@ -1,34 +1,78 @@
-import os
-from datetime import datetime
-
-# Create logs directory if it doesn't exist
-logs_dir = 'logs'
-if not os.path.exists(logs_dir):
-    os.makedirs(logs_dir)
-
-# Create log file with date and time
-log_timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-log_file = os.path.join(logs_dir, f'main_{log_timestamp}.log')
-
 import logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(log_file, encoding='utf-8'),
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
-
+import os
 import sys
+import argparse
+from datetime import datetime
+from logging_config import setup_module_logging
+
 import json
 from config_loader import load_config, ConfigError
 from highlight_api import HighlightAPI
 from sbom_builder import SBOMBuilder
 from sbom_exporter import SBOMExporter
 
+def parse_arguments():
+    """Parse command line arguments for logging control"""
+    parser = argparse.ArgumentParser(
+        description='SBOM Generator with configurable logging levels',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""Logging Level Examples:
+  python main.py --log-level DEBUG    # Show all logs including debug
+  python main.py --debug              # Enable debug logging
+  python main.py --quiet              # Only show errors
+  python main.py                      # Default INFO level logging"""
+    )
+    
+    # Logging level arguments (mutually exclusive)
+    log_group = parser.add_mutually_exclusive_group()
+    log_group.add_argument(
+        '--log-level',
+        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
+        default='INFO',
+        help='Set the logging level (default: INFO)'
+    )
+    log_group.add_argument(
+        '--debug',
+        action='store_const',
+        const='DEBUG',
+        dest='log_level',
+        help='Enable debug logging (equivalent to --log-level DEBUG)'
+    )
+    log_group.add_argument(
+        '--quiet',
+        action='store_const',
+        const='QUIET',
+        dest='log_level',
+        help='Quiet mode - only show errors'
+    )
+    
+    return parser.parse_args()
+
+def setup_global_logging(log_level: str):
+    """Set up logging for all modules with the specified level"""
+    # Import all modules that use logging
+    import sbom_builder
+    import sbom_generator
+    import highlight_api
+    import verify_compliance
+    
+    # Update their loggers with the new level
+    sbom_builder.logger, sbom_builder.log_files = setup_module_logging('sbom_builder', log_level)
+    sbom_generator.logger, sbom_generator.log_files = setup_module_logging('sbom_generator', log_level)
+    highlight_api.logger, highlight_api.log_files = setup_module_logging('highlight_api', log_level)
+    verify_compliance.logger, verify_compliance.log_files = setup_module_logging('verify_compliance', log_level)
+
 def main():
+    # Parse command line arguments
+    args = parse_arguments()
+    
+    # Set up separated logging for main module with specified level
+    global logger, log_files
+    logger, log_files = setup_module_logging('main', args.log_level)
+    
+    # Set up logging for all other modules
+    setup_global_logging(args.log_level)
+    
     config_path = 'config/config.json'
     try:
         config = load_config(config_path)
@@ -65,6 +109,7 @@ def main():
         sys.exit(1)
 
     # Validate application
+    app_name = None  # Initialize app_name to avoid UnboundLocalError
     try:
         apps = api.list_applications()
         if apps:
@@ -177,6 +222,10 @@ def main():
         if 'docx' in output_formats or 'all' in output_formats:
             SBOMExporter.export_docx(sbom, f'{output_path}.docx')
             exported_files.append(f'{filename_base}.docx')
+        
+        if 'standard' in output_formats or 'all' in output_formats:
+            SBOMExporter.export_standard_format(sbom, f'{output_path}_standard.xlsx', f'{output_path}_standard.csv')
+            exported_files.extend([f'{filename_base}_standard.xlsx', f'{filename_base}_standard.csv'])
         
         logger.info(f'SBOM export complete. Files generated: {", ".join(exported_files)}')
         logger.info(f'Files saved in Reports directory with prefix: {filename_base}')

@@ -48,6 +48,7 @@ SBOM_IND/
 │   ├── sbom_builder.py            # Completely rewritten SBOM builder
 │   ├── sbom_exporter.py           # Enhanced multi-format exporter
 │   ├── config_loader.py           # Configuration management
+│   ├── logging_config.py          # Centralized logging configuration
 │   ├── compliance_analyzer.py     # Compliance analysis
 │   └── verify_compliance.py       # Enhanced compliance verification
 ├── tests/
@@ -55,7 +56,9 @@ SBOM_IND/
 ├── config/
 │   └── config.json               # Configuration file
 ├── Reports/                      # Generated SBOM outputs
-├── logs/                         # Detailed logs
+├── logs/                         # Enhanced logging system
+│   ├── log/                      # General log files (INFO+)
+│   └── error/                    # Error-specific log files
 └── requirements.txt              # Enhanced dependencies
 ```
 
@@ -95,7 +98,7 @@ cp config/config_template.json config/config.json
     }
   },
   "sbom_settings": {
-    "output_formats": ["json", "xlsx", "cyclonedx", "docx", "csv"],
+    "output_formats": ["json", "xlsx", "cyclonedx", "docx", "csv", "standard"],
     "default_output_format": "xlsx",
     "default_output_prefix": "sbom_sample"
   },
@@ -117,23 +120,40 @@ cp config/config_template.json config/config.json
 
 ### **Basic Usage**
 ```bash
-# Generate comprehensive SBOM
-python -m src.main
+# Generate comprehensive SBOM (default INFO logging)
+python src/main.py
 
 # Verify compliance and field coverage
 python -m src.verify_compliance
+```
 
-# Test enhanced functionality
-python tests/test_enhanced_sbom.py
+### **Logging Level Controls**
+```bash
+# Default INFO level logging
+python src/main.py
+
+# Enable debug logging (shows all log messages)
+python src/main.py --debug
+
+# Set specific logging level
+python src/main.py --log-level DEBUG
+python src/main.py --log-level WARNING
+python src/main.py --log-level ERROR
+
+# Quiet mode (only show errors)
+python src/main.py --quiet
+
+# Show help for logging options
+python src/main.py --help
 ```
 
 ### **Advanced Usage**
 ```bash
-# Generate SBOM with specific formats
-python -m src.main --formats json,xlsx,csv
+# Generate SBOM with quiet logging
+python src/main.py --quiet
 
-# Run compliance analysis
-python -m src.verify_compliance --detailed
+# Generate SBOM with debug information
+python src/main.py --debug
 
 # Test with specific application
 python tests/test_enhanced_sbom.py --app-id 12345
