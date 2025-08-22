@@ -13,6 +13,7 @@ This enhanced application connects to the CAST Highlight API to extract comprehe
 - **Compliance Analysis**: Added comprehensive compliance analyzer to identify missing fields
 - **Field Coverage Reporting**: Detailed reporting of available vs. missing SBOM fields
 - **User Notifications**: Clear notifications about field coverage and compliance status
+- **Automatic Log Cleanup**: Automatically removes empty log files and reports cleanup activity
 
 ### **Previous Improvements (v2.1.2)**
 - **Standardized Empty/Null Values**: Implemented `get_value` helper to return "unavailable" for empty or null fields
@@ -827,6 +828,8 @@ logging.basicConfig(level=logging.DEBUG)
 ### **Enhanced Logging Features**
 - **Timestamped Log Files**: All operations logged with timestamps
 - **Multiple Log Levels**: INFO, WARNING, ERROR, DEBUG
+- **Automatic Log Cleanup**: Removes empty log files automatically after each execution
+- **Cleanup Reporting**: Logs detailed information about removed empty files
 - **Audit Trail**: Complete operation tracking
 - **Field Coverage Statistics**: Detailed coverage analysis
 - **Property Distribution**: Property extraction statistics
@@ -834,9 +837,25 @@ logging.basicConfig(level=logging.DEBUG)
 ### **Log File Structure**
 ```
 logs/
-├── main_20250807_115044.log
-├── verify_compliance_20250807_115044.log
-└── test_enhanced_sbom_20250807_115044.log
+├── log/                              # General log files (INFO+)
+│   ├── main_20250822_123822.log
+│   ├── sbom_generator_20250822_123822.log
+│   └── highlight_api_20250822_123822.log
+└── error/                            # Error-specific log files
+    ├── main_20250822_123822.error
+    └── sbom_generator_20250822_123822.error
+```
+
+### **Automatic Log Cleanup**
+The application automatically maintains clean log directories by:
+- **Detecting Empty Files**: Identifies log files with zero bytes
+- **Safe Removal**: Only removes truly empty files, preserving all actual log data
+- **Cleanup Logging**: Reports all cleanup activity with file names and counts
+- **Non-Destructive**: Maintains audit trail while keeping directories tidy
+
+**Example Cleanup Output:**
+```
+INFO:main:Cleanup: Removed 9 empty log files: highlight_api_20250822_123820.log, sbom_builder_20250822_123820.log, highlight_api_20250822_123743.error, highlight_api_20250822_123820.error, main_20250822_123742.error, sbom_builder_20250822_123743.error, sbom_builder_20250822_123820.error, sbom_generator_20250822_123743.error, verify_compliance_20250822_123743.error
 ```
 
 ## 🔒 Security Features

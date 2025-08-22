@@ -1,6 +1,7 @@
 import logging
 import os
 from datetime import datetime
+import glob
 
 
 class SeparatedLoggingConfig:
@@ -99,6 +100,29 @@ class SeparatedLoggingConfig:
             'log_file': self.log_file_path,
             'error_file': self.error_file_path
         }
+
+
+def cleanup_empty_log_files(logs_base_dir: str = "logs") -> list:
+    """Remove empty log files and return list of removed files"""
+    removed_files = []
+    
+    # Check both log and error directories
+    for subdir in ["log", "error"]:
+        dir_path = os.path.join(logs_base_dir, subdir)
+        if os.path.exists(dir_path):
+            # Find all log files in the directory
+            pattern = os.path.join(dir_path, "*.log") if subdir == "log" else os.path.join(dir_path, "*.error")
+            for file_path in glob.glob(pattern):
+                try:
+                    # Check if file is empty
+                    if os.path.getsize(file_path) == 0:
+                        os.remove(file_path)
+                        removed_files.append(os.path.basename(file_path))
+                except (OSError, IOError) as e:
+                    # Skip files that can't be accessed or removed
+                    continue
+    
+    return removed_files
 
 
 def setup_module_logging(module_name: str, log_level: str = 'INFO'):

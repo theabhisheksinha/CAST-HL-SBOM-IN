@@ -1,5 +1,34 @@
 # Changelog - CAST Highlight SBOM Generator
 
+## [2.1.6] - 2025-08-22 - Automatic Empty Log File Cleanup
+
+### 🧹 New Cleanup Features
+- **Automatic Empty File Detection**: Program automatically identifies and removes empty log files (0 bytes)
+- **Smart Cleanup Logic**: Only removes files with zero content, preserving all files with actual log data
+- **Comprehensive Cleanup**: Scans both `logs/log` and `logs/error` directories for empty files
+- **Cleanup Logging**: Main logger reports detailed cleanup activity with file names and count
+
+### 🔧 Implementation Details
+- **`cleanup_empty_log_files()` Function**: New utility function in `logging_config.py` for safe file cleanup
+- **Integrated Execution**: Cleanup runs automatically at the end of each program execution
+- **Error Handling**: Graceful handling of file access issues during cleanup process
+- **Transparency**: Clear logging of all cleanup actions for audit trail
+
+### 🛠️ Files Modified
+- `src/logging_config.py` - Added `cleanup_empty_log_files()` function with glob pattern matching
+- `src/main.py` - Integrated cleanup functionality at program completion
+
+### 🔍 Technical Benefits
+- **Clean Log Directories**: Automatically maintains tidy log directories without manual intervention
+- **Non-Destructive**: Only removes truly empty files, preserving all actual log data
+- **Maintenance-Free**: Runs automatically with each program execution
+- **Audit Trail**: Complete logging of cleanup actions for transparency
+
+### 📊 Example Output
+```
+INFO:main:Cleanup: Removed 9 empty log files: highlight_api_20250822_123820.log, sbom_builder_20250822_123820.log, highlight_api_20250822_123743.error, highlight_api_20250822_123820.error, main_20250822_123742.error, sbom_builder_20250822_123743.error, sbom_builder_20250822_123820.error, sbom_generator_20250822_123743.error, verify_compliance_20250822_123743.error
+```
+
 ## [2.1.5] - 2025-08-22 - Configurable Logging Levels & Production Cleanup
 
 ### 🎛️ New Features

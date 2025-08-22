@@ -3,7 +3,7 @@ import os
 import sys
 import argparse
 from datetime import datetime
-from logging_config import setup_module_logging
+from logging_config import setup_module_logging, cleanup_empty_log_files
 
 import json
 from config_loader import load_config, ConfigError
@@ -233,6 +233,16 @@ def main():
     except Exception as e:
         logger.error(f'Failed to export SBOM: {e}')
         sys.exit(1)
+    
+    # Clean up empty log files at the end of execution
+    try:
+        removed_files = cleanup_empty_log_files()
+        if removed_files:
+            logger.info(f"Cleanup: Removed {len(removed_files)} empty log files: {', '.join(removed_files)}")
+        else:
+            logger.info("Cleanup: No empty log files found to remove")
+    except Exception as e:
+        logger.warning(f"Failed to clean up empty log files: {e}")
 
 def _log_field_coverage(sbom):
     """Log field coverage statistics for the generated SBOM"""
